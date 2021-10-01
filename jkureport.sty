@@ -1,0 +1,2379 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% LaTeX Style for Various Reports and Theses at Johannes Kepler University Linz
+%% 
+%% Copyright (C) 2021  Michael Roland
+%% 
+%% This Source Code Form is subject to the terms of the Mozilla Public
+%% License, v. 2.0. If a copy of the MPL was not distributed with this
+%% file, You can obtain one at https://mozilla.org/MPL/2.0/.
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+
+\ProvidesPackage{jkureport}
+%\typeout{Package: jkureport v\jkureport@version, <\jkureport@date> (\jkureport@authors)}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Dependencies
+%% 
+
+\RequirePackage{etoolbox}
+\RequirePackage{pgfkeys}
+\RequirePackage{pgfopts}
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{calc}
+\RequirePackage{babel}
+\RequirePackage{translations}
+\RequirePackage[calc,useregional]{datetime2}
+\RequirePackage{amsmath}
+\RequirePackage{url}
+\RequirePackage{enumitem}
+\RequirePackage{hyperxmp}
+\RequirePackage[
+    bookmarks=true,
+    bookmarksnumbered=false,
+    bookmarksopen=true,
+    linkcolor={jkuPurple},
+    urlcolor={jkuBlue},
+    colorlinks=false,
+    pdfstartview=FitH,
+    pdfpagelayout=OneColumn,
+    pdfborder={0 0 0},
+    ]{hyperref}
+\RequirePackage{multirow}
+\RequirePackage{array}
+\RequirePackage{tabularx}
+\RequirePackage{booktabs}
+\RequirePackage{rotating}
+\RequirePackage{colortbl}
+\RequirePackage{ifxetex}
+\RequirePackage{listings}
+\RequirePackage{verbatim}
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% KOMA-Script checking
+%% 
+
+\ifdefstring{\KOMAClassName}{scrartcl}{%
+}{\ifdefstring{\KOMAClassName}{scrreprt}{%
+}{\ifdefstring{\KOMAClassName}{scrbook}{%
+}{\ifdef{\KOMAClassName}{%
+    \PackageWarning{jkureport}{This package expects one of the KOMA-Script classes `scrartcl', `scrreprt' or `scrbook'.}%
+}{
+    \PackageError{jkureport}{This package requires KOMA-Script classes. Please use `scrartcl', `scrreprt' or `scrbook' as your document class.}{}%
+}}}}
+
+\RequirePackage{scrlayer-scrpage}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Options & Parameters
+%% 
+
+% Option logopath={}: set path to template logo resources (defaults to "./logos")
+\newcommand{\jkureport@logopath}{}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    logopath/.value required,
+    logopath/.code={%
+        \renewcommand{\jkureport@logopath}{#1}%
+    },
+    logopath=./logos,
+}
+
+% Option fontpath={}: set path to template font resources (defaults to "./fonts")
+\newcommand{\jkureport@fontpath}{}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    fontpath/.value required,
+    fontpath/.code={%
+        \renewcommand{\jkureport@fontpath}{#1}%
+    },
+    fontpath=./fonts,
+}
+
+% Option [no]fancyfonts: use custom TTF fonts with XeTeX (defaults to true)
+\newbool{jkureport@xetexfonts}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    fancyfonts/.is choice,
+    fancyfonts/.default=true,
+    fancyfonts/true/.code={\booltrue{jkureport@xetexfonts}},
+    fancyfonts/false/.code={\boolfalse{jkureport@xetexfonts}},
+    fancyfonts=true,
+    nofancyfonts/.value forbidden,
+    nofancyfonts/.code={\boolfalse{jkureport@xetexfonts}},
+}
+
+% Option [no]compactverb: use condensed fixed-width font for verbatim and listings (requires XeTeX and the fancyfonts option)
+\newbool{jkureport@compactverb}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    compactverb/.is choice,
+    compactverb/.default=true,
+    compactverb/true/.code={\booltrue{jkureport@compactverb}},
+    compactverb/false/.code={\boolfalse{jkureport@compactverb}},
+    compactverb=true,
+    nocompactverb/.value forbidden,
+    nocompactverb/.code={\boolfalse{jkureport@compactverb}},
+}
+
+% Option [no]compactmono: use condensed fixed-width font (requires XeTeX and the fancyfonts option)
+\newbool{jkureport@compactmono}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    compactmono/.is choice,
+    compactmono/.default=true,
+    compactmono/true/.code={\booltrue{jkureport@compactmono}},
+    compactmono/false/.code={\boolfalse{jkureport@compactmono}},
+    compactmono=false,
+    nocompactmono/.value forbidden,
+    nocompactmono/.code={\boolfalse{jkureport@compactmono}},
+}
+
+% Option [no]mathastext: use standard document fonts (and default to sans-serif font) in math mode (defaults to false)
+\newbool{jkureport@mathastext}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    mathastext/.is choice,
+    mathastext/.default=true,
+    mathastext/true/.code={\booltrue{jkureport@mathastext}},
+    mathastext/false/.code={\boolfalse{jkureport@mathastext}},
+    mathastext=false,
+    nomathastext/.value forbidden,
+    nomathastext/.code={\boolfalse{jkureport@mathastext}},
+}
+
+% Option [no]imprint: show imprint on title page (defaults to true)
+\newbool{jkureport@imprint}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    imprint/.is choice,
+    imprint/.default=true,
+    imprint/true/.code={\booltrue{jkureport@imprint}},
+    imprint/false/.code={\boolfalse{jkureport@imprint}},
+    imprint=true,
+    noimprint/.value forbidden,
+    noimprint/.code={\boolfalse{jkureport@imprint}},
+}
+
+% Option [no]titlelogo: show logo on title page (defaults to true)
+\newbool{jkureport@titlelogo}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    titlelogo/.is choice,
+    titlelogo/.default=true,
+    titlelogo/true/.code={\booltrue{jkureport@titlelogo}},
+    titlelogo/false/.code={\boolfalse{jkureport@titlelogo}},
+    titlelogo=true,
+    notitlelogo/.value forbidden,
+    notitlelogo/.code={\boolfalse{jkureport@titlelogo}},
+}
+
+% Option [no]capstitle: set title in all-caps (defaults to false)
+\newbool{jkureport@titlecaps}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    capstitle/.is choice,
+    capstitle/.default=true,
+    capstitle/true/.code={\booltrue{jkureport@titlecaps}},
+    capstitle/false/.code={\boolfalse{jkureport@titlecaps}},
+    capstitle=false,
+    nocapstitle/.value forbidden,
+    nocapstitle/.code={\boolfalse{jkureport@titlecaps}},
+}
+
+% Option [no]equalmargins: use equal-width inner and other page margins (defaults to true)
+\newlength{\jkureport@textwidthadd}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    equalmargins/.is choice,
+    equalmargins/.default=true,
+    equalmargins/true/.code={\setlength{\jkureport@textwidthadd}{0mm}},
+    equalmargins/false/.code={\setlength{\jkureport@textwidthadd}{-15mm}},
+    equalmargins=false,
+}
+
+% Option phdthesis: this is a PhD thesis
+% Option mathesis: this is a master's thesis
+% Option dimplomathesis: this is a dimploma thesis
+% Option bathesis: this is a bachelor's thesis
+% Option seminarreport: this is a seminar report
+\newcommand{\jkureport@doctype}{report}
+\newcommand{\jkureport@docsubtype}{}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    phdthesis/.value forbidden,
+    phdthesis/.code={%
+        \renewcommand{\jkureport@doctype}{thesis}%
+        \renewcommand{\jkureport@docsubtype}{phd}%
+    },
+    mathesis/.value forbidden,
+    mathesis/.code={%
+        \renewcommand{\jkureport@doctype}{thesis}%
+        \renewcommand{\jkureport@docsubtype}{master}%
+    },
+    masterthesis/.value forbidden,
+    masterthesis/.code={%
+        \renewcommand{\jkureport@doctype}{thesis}%
+        \renewcommand{\jkureport@docsubtype}{master}%
+    },
+    diplomathesis/.value forbidden,
+    diplomathesis/.code={%
+        \renewcommand{\jkureport@doctype}{thesis}%
+        \renewcommand{\jkureport@docsubtype}{diploma}%
+    },
+    bathesis/.value forbidden,
+    bathesis/.code={%
+        \renewcommand{\jkureport@doctype}{thesis}%
+        \renewcommand{\jkureport@docsubtype}{bachelor}%
+    },
+    bachelorthesis/.value forbidden,
+    bachelorthesis/.code={%
+        \renewcommand{\jkureport@doctype}{thesis}%
+        \renewcommand{\jkureport@docsubtype}{bachelor}%
+    },
+    report/.value forbidden,
+    report/.code={%
+        \renewcommand{\jkureport@doctype}{report}%
+        \renewcommand{\jkureport@docsubtype}{}%
+    },
+    seminarreport/.value forbidden,
+    seminarreport/.code={%
+        \renewcommand{\jkureport@doctype}{report}%
+        \renewcommand{\jkureport@docsubtype}{seminar}%
+    },
+    techreport/.value forbidden,
+    techreport/.code={%
+        \renewcommand{\jkureport@doctype}{report}%
+        \renewcommand{\jkureport@docsubtype}{tech}%
+    },
+}
+
+% Option [no]autopdfinfo: automatically add pdfinfo with hyperref (defaults to true)
+\newbool{jkureport@hyperref@automatic}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    autopdfinfo/.is choice,
+    autopdfinfo/.default=true,
+    autopdfinfo/true/.code={\booltrue{jkureport@hyperref@automatic}},
+    autopdfinfo/false/.code={\boolfalse{jkureport@hyperref@automatic}},
+    autopdfinfo=true,
+    noautopdfinfo/.value forbidden,
+    noautopdfinfo/.code={\boolfalse{jkureport@hyperref@automatic}},
+}
+
+% Option JKU: use color palette for all JKU
+\newcommand{\jkureport@faculty}{jku}
+\newcommand{\jkureport@institute@code}{}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    JKU/.value forbidden,
+    JKU/.code={\renewcommand{\jkureport@faculty}{jku}},
+    jku/.value forbidden,
+    jku/.code={\renewcommand{\jkureport@faculty}{jku}},
+}
+
+% Option BUS: use color palette for the business school
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    BUS/.value forbidden,
+    BUS/.code={\renewcommand{\jkureport@faculty}{bus}},
+    bus/.value forbidden,
+    bus/.code={\renewcommand{\jkureport@faculty}{bus}},
+}
+
+% Option LIT: use color palette for the Linz Institute of Technology
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    LIT/.value forbidden,
+    LIT/.code={\renewcommand{\jkureport@faculty}{lit}\renewcommand{\jkureport@institute@code}{LIT}},
+    lit/.value forbidden,
+    lit/.code={\renewcommand{\jkureport@faculty}{lit}\renewcommand{\jkureport@institute@code}{LIT}},
+}
+
+% Option MED: use color palette for the MED faculty
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    MED/.value forbidden,
+    MED/.code={\renewcommand{\jkureport@faculty}{med}},
+    med/.value forbidden,
+    med/.code={\renewcommand{\jkureport@faculty}{med}},
+}
+
+% Option RE: use color palette for the RE faculty
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    RE/.value forbidden,
+    RE/.code={\renewcommand{\jkureport@faculty}{re}},
+    re/.value forbidden,
+    re/.code={\renewcommand{\jkureport@faculty}{re}},
+}
+
+% Option SOE: use color palette for the School of Education
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    SOE/.value forbidden,
+    SOE/.code={\renewcommand{\jkureport@faculty}{soe}},
+    SoE/.value forbidden,
+    SoE/.code={\renewcommand{\jkureport@faculty}{soe}},
+    soe/.value forbidden,
+    soe/.code={\renewcommand{\jkureport@faculty}{soe}},
+}
+
+% Option SOWI: use color palette for the SOWI faculty
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    SOWI/.value forbidden,
+    SOWI/.code={\renewcommand{\jkureport@faculty}{sowi}},
+    sowi/.value forbidden,
+    sowi/.code={\renewcommand{\jkureport@faculty}{sowi}},
+}
+
+% Option TNF: use color palette for the TNF faculty
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    TNF/.value forbidden,
+    TNF/.code={\renewcommand{\jkureport@faculty}{tnf}},
+    tnf/.value forbidden,
+    tnf/.code={\renewcommand{\jkureport@faculty}{tnf}},
+}
+
+
+\DeclareOption*{}
+\ProcessPgfOptions{/jkureport/pkg}
+\ProcessOptions\relax
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Definitions
+%% 
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Page size tweaks
+%% 
+
+% Title page
+\newlength{\jkureport@outermargin}
+\setlength{\jkureport@outermargin}{15mm}
+\newlength{\jkureport@titlepage@marginpar}
+\setlength{\jkureport@titlepage@marginpar}{55mm}
+\newlength{\jkureport@titlepage@marginleft}
+\setlength{\jkureport@titlepage@marginleft}{-5mm}
+\newlength{\jkureport@Klogo@width}
+\setlength{\jkureport@Klogo@width}{44mm}
+\newlength{\jkureport@Klogo@height}
+\newlength{\jkureport@Klogo@titlepage@offset}
+\setlength{\jkureport@Klogo@titlepage@offset}{110mm}
+\newlength{\jkureport@logo@titlepage@height}
+\setlength{\jkureport@logo@titlepage@height}{25mm}
+\newlength{\jkureport@logo@titlepage@hoffset}
+\setlength{\jkureport@logo@titlepage@hoffset}{12.9mm}
+\newlength{\jkureport@logo@titlepage@offset}
+\setlength{\jkureport@logo@titlepage@offset}{15mm}
+\newlength{\jkureport@partnerlogo@titlepage@offset}
+\setlength{\jkureport@partnerlogo@titlepage@offset}{10mm}
+\newlength{\jkureport@partnerlogo@titlepage@width}
+\setlength{\jkureport@partnerlogo@titlepage@width}{\dimexpr\jkureport@titlepage@marginpar-\jkureport@outermargin\relax}
+\newlength{\jkureport@imprint@titlepage@offset}
+\setlength{\jkureport@imprint@titlepage@offset}{35mm}
+\newlength{\jkureport@authoring@titlepage@offset}
+\setlength{\jkureport@authoring@titlepage@offset}{60mm}
+
+% General page sizing
+\setlength{\pdfpagewidth}{\paperwidth}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\hoffset}{0in}
+\setlength{\voffset}{0in}
+
+\setlength{\topmargin}{15mm}
+\setlength{\headheight}{5mm}
+\setlength{\headsep}{10mm}
+\setlength{\footskip}{15mm}
+\newlength{\bottommargin}
+\setlength{\bottommargin}{30mm}
+\setlength{\textheight}{\dimexpr\paperheight - \headsep - \headheight - \topmargin - \bottommargin\relax}
+\setlength{\oddsidemargin}{30mm}
+\setlength{\evensidemargin}{\dimexpr\oddsidemargin - \jkureport@textwidthadd\relax}
+\setlength{\marginparsep}{5mm}
+\setlength{\marginparwidth}{\dimexpr\evensidemargin - 2\marginparsep\relax}
+\setlength{\columnseprule}{0mm}
+\setlength{\columnsep}{6mm}
+\setlength{\textwidth}{\dimexpr\paperwidth - \oddsidemargin - \evensidemargin\relax}
+
+\addtolength{\topmargin}{\dimexpr\voffset - 1in\relax}
+\addtolength{\oddsidemargin}{\dimexpr\hoffset - 1in\relax}
+\addtolength{\evensidemargin}{\dimexpr\hoffset - 1in\relax}
+
+\setlength{\parindent}{0mm}
+%\setlength{\parskip}{1.5ex plus0.5ex minus0.5ex}
+\addtolength{\parskip}{0.5\baselineskip plus0.2ex minus0.5ex}
+
+\newlength{\jkureport@topmargin}
+\newlength{\jkureport@oddsidemargin}
+\newlength{\jkureport@evensidemargin}
+\setlength{\jkureport@topmargin}{\dimexpr\topmargin + 1in - \voffset\relax}
+\setlength{\jkureport@oddsidemargin}{\dimexpr\oddsidemargin + 1in - \hoffset\relax}%
+\setlength{\jkureport@evensidemargin}{\dimexpr\evensidemargin + 1in - \hoffset\relax}%
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Fancy fonts with XeTeX
+%% 
+
+\RequirePackage{lmodern}
+\RequirePackage{inconsolata}
+\RequirePackage{helvet}
+\RequirePackage{euler}
+\RequirePackage{fontawesome5}
+
+\ifxetex\else%
+    \ifbool{jkureport@xetexfonts}{%
+        \PackageWarning{jkureport}{True-type fonts are only supported on XeLaTeX. Please consider switching to XeLaTeX to get the full look and feel of this template. Note that you can silence this warning with the `nofancyfonts' option.}%
+    }{}%
+    \boolfalse{jkureport@xetexfonts}%
+\fi
+
+\ifbool{jkureport@xetexfonts}{%
+    \expandafter\IfFileExists\expandafter{\jkureport@fontpath PublicSans-Regular.ttf}{%
+    }{\expandafter\IfFileExists\expandafter{\jkureport@fontpath/PublicSans-Regular.ttf}{%
+        \xdef\jkureport@fontpath{\jkureport@fontpath/}
+    }{%
+        \PackageError{jkureport}{Font files not found in `\jkureport@fontpath', forgot to set the font path with package option `fontpath='?}{}%
+        \stop
+    }}
+    
+    \RequirePackage[no-math]{fontspec}
+    \defaultfontfeatures{
+        Path={\jkureport@fontpath},
+        Extension=.ttf,
+        UprightFont=*-Regular,
+        BoldFont=*-Bold,
+        ItalicFont=*-Italic,
+        BoldItalicFont=*-BoldItalic
+    }
+    \defaultfontfeatures+[Inconsolata,InconsolataCondensed]{
+        Scale=1.16,
+        ItalicFont={},
+        BoldItalicFont={},
+        AutoFakeSlant,
+        AutoFakeBold,
+        %BoldItalicFeatures={FakeSlant}
+    }
+    \setmainfont{Merriweather}
+    %\setsansfont{OpenSans}
+    \setsansfont{PublicSans}
+    \ifbool{jkureport@compactmono}{%
+        \setmonofont{InconsolataCondensed}
+    }{%
+        \setmonofont{Inconsolata}
+    }
+    \newfontfamily\rmlightfamily{Merriweather}[
+        NFSSFamily=rmlight,
+        UprightFont=*-Light,
+        BoldFont=*-Regular,
+        ItalicFont=*-LightItalic,
+        BoldItalicFont=*-Italic,
+        Ligatures=TeX]
+    \newfontfamily\rmblackfamily{Merriweather}[
+        NFSSFamily=rmblack,
+        UprightFont=*-Black,
+        BoldFont=*-Black,
+        ItalicFont=*-BlackItalic,
+        BoldItalicFont=*-BlackItalic,
+        Ligatures=TeX]
+    %\newfontfamily\sflightfamily{OpenSans}[
+    %    NFSSFamily=sflight,
+    %    UprightFont=*-Light,
+    %    BoldFont=*-SemiBold,
+    %    ItalicFont=*-LightItalic,
+    %    BoldItalicFont=*-SemiBoldItalic,
+    %    Ligatures=TeX]
+    %\newfontfamily\sfblackfamily{OpenSans}[
+    %    NFSSFamily=sfblack,
+    %    UprightFont=*-ExtraBold,
+    %    BoldFont=*-ExtraBold,
+    %    ItalicFont=*-ExtraBoldItalic,
+    %    BoldItalicFont=*-ExtraBoldItalic,
+    %    Ligatures=TeX]
+    \newfontfamily\sflightfamily{PublicSans}[
+        NFSSFamily=sflight,
+        UprightFont=*-Thin,
+        BoldFont=*-Medium,
+        ItalicFont=*-ThinItalic,
+        BoldItalicFont=*-MediumItalic,
+        Ligatures=TeX]
+    \newfontfamily\sfblackfamily{PublicSans}[
+        NFSSFamily=sfblack,
+        %LetterSpace=1.0,
+        UprightFont=*-ExtraBold,
+        BoldFont=*-Black,
+        ItalicFont=*-ExtraBoldItalic,
+        BoldItalicFont=*-BlackItalic,
+        Ligatures=TeX]
+    \ifbool{jkureport@compactmono}{%
+        \newfontfamily\ttlightfamily{InconsolataCondensed}[
+            NFSSFamily=ttlight,
+            UprightFont=*-Light,
+            BoldFont=*-Medium]
+    }{%
+        \newfontfamily\ttlightfamily{Inconsolata}[
+            NFSSFamily=ttlight,
+            UprightFont=*-Light,
+            BoldFont=*-Medium]
+    }
+    \newfontfamily\ttcondensedfamily{InconsolataCondensed}[
+        NFSSFamily=ttcondensed]
+    \newfontfamily\ttcondensedlightfamily{InconsolataCondensed}[
+        NFSSFamily=ttcondensedlight,
+        UprightFont=*-Light,
+        BoldFont=*-Medium]
+    %\setmathsfont(Digits,Latin){Merriweather}
+    %\setmathrm{Merriweather}
+    %\setboldmathrm{Merriweather}[
+    %    NFSSFamily=rmblack,
+    %    UprightFont=*-Black,
+    %    BoldFont=*-Black,
+    %    ItalicFont=*-BlackItalic,
+    %    BoldItalicFont=*-BlackItalic]
+    %%\setmathsf{OpenSans}
+    %\setmathsf{PublicSans}
+    %\ifbool{jkureport@compactmono}{%
+    %    \setmathtt{InconsolataCondensed}
+    %}{%
+    %    \setmathtt{Inconsolata}
+    %}
+}{%
+    \RequirePackage[T1]{fontenc}
+    \newcommand{\rmlightfamily}{\rmfamily}
+    \newcommand{\rmblackfamily}{\rmfamily\bfseries}
+    \newcommand{\sflightfamily}{\sffamily}
+    \newcommand{\sfblackfamily}{\sffamily\bfseries}
+    \newcommand{\ttlightfamily}{\ttfamily}
+    \newcommand{\ttcondensedfamily}{\ttfamily}
+    \newcommand{\ttcondensedlightfamily}{\ttfamily}
+    
+    \ifbool{jkureport@compactmono}{%
+        \PackageWarning{jkureport}{Option `compactmono' requires the `fancyfonts' option.}%
+    }{}%
+    \ifbool{jkureport@compactverb}{%
+        \PackageWarning{jkureport}{Option `compactverb' requires the `fancyfonts' option.}%
+    }{}%
+}
+
+\ifbool{jkureport@compactverb}{%
+    \newcommand{\jkureport@verbfamily}{\ttcondensedfamily}
+}{%
+    \newcommand{\jkureport@verbfamily}{\ttfamily}
+}%
+
+\renewcommand\familydefault{\rmdefault}
+
+% KOMA-Script font definitions and adaptions
+\setkomafont{title}{\sfblackfamily\fontsize{28pt}{32.2pt}\selectfont}
+\setkomafont{titlehead}{\sfblackfamily\fontsize{20pt}{23pt}\selectfont}
+\setkomafont{subtitle}{\sffamily\fontsize{14pt}{16.8pt}\selectfont}
+\newkomafont{subtitlesmall}{\sffamily\fontsize{11pt}{13.2pt}\selectfont}
+\newlength{\jkureport@subtitleparskip}
+\setlength{\jkureport@subtitleparskip}{6pt}
+\setkomafont{subject}{\usekomafont{subtitle}\bfseries}
+\newkomafont{abstract}{\sffamily\fontsize{9pt}{11pt}\selectfont}
+\newkomafont{abstractname}{\usekomafont{abstract}\bfseries}
+\newkomafont{authoring}{\sffamily\fontsize{9pt}{11pt}\selectfont}
+\setkomafont{author}{\bfseries}
+\newkomafont{authorprefixsuffix}{\mdseries}
+\newkomafont{authoraffiliation}{\mdseries}
+\setkomafont{date}{}
+\newkomafont{imprint}{\sffamily\fontsize{8pt}{11pt}\selectfont}
+\newkomafont{imprintname}{\sfblackfamily\fontsize{9pt}{11pt}\selectfont}
+\setkomafont{pageheadfoot}{\sffamily}
+\setkomafont{pagehead}{}
+\setkomafont{pagefoot}{}
+\setkomafont{pagenumber}{}
+\newkomafont{watermarktitle}{\sfblackfamily\fontsize{80pt}{96pt}\selectfont}
+\newkomafont{watermark}{\sffamily\fontsize{32pt}{40pt}\selectfont}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Experimental: Use standard document fonts in math mode
+%% 
+
+\ifbool{jkureport@mathastext}{%
+    \usepackage[italic,defaultmathsizes,eulergreek]{mathastext}
+}{}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% URLs
+%% 
+
+\def\url@rmstyle{\def\UrlFont{\rmfamily}}
+\def\url@sfstyle{\def\UrlFont{\sffamily}}
+\def\url@ttstyle{\def\UrlFont{\ttfamily}}
+%\urlstyle{\rmdefault}
+\urlstyle{same}
+
+% Nasty hack to emulate passing option `hyphens' to the url package:
+\def\do@url@hyp{\do\-}
+
+\newcommand{\mailto}[1]{\href{mailto:#1}{#1}}
+\newcommand{\prettyurl}[2][]{\ifstrempty{#1}{\href{#2}{#2}}{\href{#1}{#2}}}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% JKU base colors
+%% 
+
+%BLUE
+\definecolor{jkuBlue}{RGB}{4,110,152}
+%CYAN
+\definecolor{jkuCyan}{RGB}{92,207,203}
+\colorlet{jkuLightBlue}{jkuCyan}
+%YELLOW
+\definecolor{jkuYellow}{RGB}{251,186,0}
+%GREY
+\definecolor{jkuGrey}{RGB}{128,130,136}
+\colorlet{jkuGray}{jkuGrey}
+%DARKGREY
+\definecolor{jkuDarkGrey}{RGB}{90,90,90}
+\colorlet{jkuDarkGray}{jkuDarkGrey}
+%LIGHTGREEN
+\definecolor{jkuLightGreen}{RGB}{187,208,50}
+%GREEN
+\definecolor{jkuGreen}{RGB}{76,172,78}
+%PURPLE
+\definecolor{jkuPurple}{RGB}{156,71,123}
+%RED
+\definecolor{jkuRed}{RGB}{231,55,41}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% JKU base colors commands
+%% 
+
+\newcommand{\crBlue}{\color{jkuBlue}}
+\newcommand{\cBlue}[1]{{\crBlue{#1}}}
+\newcommand{\cjkuBlue}[1]{{\crBlue{#1}}}
+
+\newcommand{\crCyan}{\color{jkuCyan}}
+\newcommand{\cCyan}[1]{{\crCyan{#1}}}
+\newcommand{\cjkuCyan}[1]{{\crCyan{#1}}}
+\newcommand{\crLightBlue}{\crCyan}
+\newcommand{\cLightBlue}[1]{{\crCyan{#1}}}
+\newcommand{\cjkuLightBlue}[1]{{\crCyan{#1}}}
+
+\newcommand{\crYellow}{\color{jkuYellow}}
+\newcommand{\cYellow}[1]{{\crYellow{#1}}}
+\newcommand{\cjkuYellow}[1]{{\crYellow{#1}}}
+
+\newcommand{\crGrey}{\color{jkuGrey}}
+\newcommand{\cGrey}[1]{{\crGrey{#1}}}
+\newcommand{\cjkuGrey}[1]{{\crGrey{#1}}}
+\newcommand{\crGray}{\crGrey}
+\newcommand{\cGray}[1]{{\crGrey{#1}}}
+\newcommand{\cjkuGray}[1]{{\crGrey{#1}}}
+
+\newcommand{\crDarkGrey}{\color{jkuDarkGrey}}
+\newcommand{\cDarkGrey}[1]{{\crDarkGrey{#1}}}
+\newcommand{\cjkuDarkGrey}[1]{{\crDarkGrey{#1}}}
+\newcommand{\crDarkGray}{\crDarkGrey}
+\newcommand{\cDarkGray}[1]{{\crDarkGrey{#1}}}
+\newcommand{\cjkuDarkGray}[1]{{\crDarkGrey{#1}}}
+
+\newcommand{\crLightGreen}{\color{jkuLightGreen}}
+\newcommand{\cLightGreen}[1]{{\crLightGreen{#1}}}
+\newcommand{\cjkuLightGreen}[1]{{\crLightGreen{#1}}}
+
+\newcommand{\crGreen}{\color{jkuGreen}}
+\newcommand{\cGreen}[1]{{\crGreen{#1}}}
+\newcommand{\cjkuGreen}[1]{{\crGreen{#1}}}
+
+\newcommand{\crPurple}{\color{jkuPurple}}
+\newcommand{\cPurple}[1]{{\crPurple{#1}}}
+\newcommand{\cjkuPurple}[1]{{\crPurple{#1}}}
+
+\newcommand{\crRed}{\color{jkuRed}}
+\newcommand{\cRed}[1]{{\crRed{#1}}}
+\newcommand{\cjkuRed}[1]{{\crRed{#1}}}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Color palettes
+%% 
+
+\colorlet{palette jku fg}{jkuGrey}
+\colorlet{palette med fg}{jkuYellow}
+\colorlet{palette re fg}{jkuRed}
+\colorlet{palette sowi fg}{jkuGreen}
+\colorlet{palette tnf fg}{jkuBlue}
+\colorlet{palette lit fg}{palette tnf fg}
+\colorlet{palette soe fg}{jkuPurple}
+\colorlet{palette bus fg}{jkuLightGreen}
+
+\colorlet{palette jku highlight}{jkuPurple}
+\colorlet{palette med highlight}{jkuGreen}
+\colorlet{palette re highlight}{jkuBlue}
+\colorlet{palette sowi highlight}{jkuPurple}
+\colorlet{palette tnf highlight}{jkuPurple}
+\colorlet{palette lit highlight}{palette tnf highlight}
+\colorlet{palette soe highlight}{jkuYellow}
+\colorlet{palette bus highlight}{jkuPurple}
+
+\colorlet{palette faculty fg}{palette jku fg}
+\colorlet{palette faculty highlight}{palette jku highlight}
+
+\colorlet{jkureport@fg}{black}
+\colorlet{jkureport@bg}{white}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Color mode switching commands
+%% 
+
+% Color palette switches
+\xdef\jkureport@currentfaculty{\jkureport@faculty}
+\pgfkeysdefnargs{/jkureport/colorpalette/jku}{0}{%
+    \colorlet{palette faculty fg}{palette jku fg}%
+    \colorlet{palette faculty highlight}{palette jku highlight}%
+    \renewcommand{\jkureport@currentfaculty}{jku}%
+}
+\pgfkeysdefnargs{/jkureport/colorpalette/bus}{0}{%
+    \colorlet{palette faculty fg}{palette bus fg}%
+    \colorlet{palette faculty highlight}{palette bus highlight}%
+    \renewcommand{\jkureport@currentfaculty}{bus}%
+}
+\pgfkeysdefnargs{/jkureport/colorpalette/lit}{0}{%
+    \colorlet{palette faculty fg}{palette lit fg}%
+    \colorlet{palette faculty highlight}{palette lit highlight}%
+    \renewcommand{\jkureport@currentfaculty}{lit}%
+}
+\pgfkeysdefnargs{/jkureport/colorpalette/med}{0}{%
+    \colorlet{palette faculty fg}{palette med fg}%
+    \colorlet{palette faculty highlight}{palette med highlight}%
+    \renewcommand{\jkureport@currentfaculty}{med}%
+}
+\pgfkeysdefnargs{/jkureport/colorpalette/re}{0}{%
+    \colorlet{palette faculty fg}{palette re fg}%
+    \colorlet{palette faculty highlight}{palette re highlight}%
+    \renewcommand{\jkureport@currentfaculty}{re}%
+}
+\pgfkeysdefnargs{/jkureport/colorpalette/soe}{0}{%
+    \colorlet{palette faculty fg}{palette soe fg}%
+    \colorlet{palette faculty highlight}{palette soe highlight}%
+    \renewcommand{\jkureport@currentfaculty}{soe}%
+}
+\pgfkeysdefnargs{/jkureport/colorpalette/sowi}{0}{%
+    \colorlet{palette faculty fg}{palette sowi fg}%
+    \colorlet{palette faculty highlight}{palette sowi highlight}%
+    \renewcommand{\jkureport@currentfaculty}{sowi}%
+}
+\pgfkeysdefnargs{/jkureport/colorpalette/tnf}{0}{%
+    \colorlet{palette faculty fg}{palette tnf fg}%
+    \colorlet{palette faculty highlight}{palette tnf highlight}%
+    \renewcommand{\jkureport@currentfaculty}{tnf}%
+}
+
+% Command \setcolormode[FACULTY]: changes the theme color mode (if color mode is absent, reset to the global default color mode)
+\newcommand{\setcolormode}[1][]{%
+    % convert param to lowercase
+    \begingroup\edef\@temp{\lowercase{\endgroup\def\noexpand\@temp@lcparam{#1}}}\@temp%
+    % preset default color palette
+    \pgfqkeys{/jkureport/colorpalette}{\jkureport@faculty}%
+    % update color palette according to params
+    \begingroup\edef\@temp{\endgroup\noexpand\pgfqkeys{/jkureport/colorpalette}{\@temp@lcparam}}\@temp%
+}
+
+\setcolormode%
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Logos
+%% 
+
+% Definitions
+\newcommand{\jkureport@logoprefix}{jku}
+
+% Adapted from grapics.sty
+\newbool{jkureport@temp@exists}%
+\newcommand{\jkureport@IfLogoFileExists}[1]{%
+    \booltrue{jkureport@temp@exists}%
+    \def\jkureport@temp@file{}%
+    \begingroup%
+    \ifx\detokenize\@undefined\else%
+        \edef\Gin@extensions{\detokenize\expandafter{\Gin@extensions}}%
+    \fi%
+    \let\input@path\Ginput@path%
+    \set@curr@file{#1}%
+    \expandafter\filename@parse\expandafter{\@curr@file}%
+    \ifx\filename@ext\Gin@gzext%
+        \expandafter\filename@parse\expandafter{\filename@base}%
+        \ifx\filename@ext\relax%
+            \let\filename@ext\Gin@gzext%
+        \else%
+            \edef\Gin@ext{\Gin@ext\Gin@sepdefault\Gin@gzext}%
+        \fi%
+    \fi%
+    \ifx\filename@ext\relax%
+        \@for\Gin@temp:=\Gin@extensions\do{%
+            \ifx\Gin@ext\relax%
+                \Gin@getbase\Gin@temp%
+            \fi%
+        }%
+    \else%
+        \Gin@getbase{\Gin@sepdefault\filename@ext}%
+        \ifnum0%
+        \ifx\Gin@ext\relax 1%
+        \else \@ifundefined{Gin@rule@\Gin@ext}{1}{0}%
+        \fi >0%
+            \let\Gin@ext\relax%
+            \let\Gin@savedbase\filename@base%
+            \let\Gin@savedext\filename@ext%
+            \edef\filename@base{\filename@base\Gin@sepdefault\filename@ext}%
+            \let\filename@ext\relax%
+            \@for\Gin@temp:=\Gin@extensions\do{%
+                \ifx\Gin@ext\relax%
+                    \Gin@getbase\Gin@temp%
+                \fi%
+            }%
+            \ifx\Gin@ext\relax%
+                \let\filename@base\Gin@savedbase%
+                \let\filename@ext\Gin@savedext%
+            \fi%
+        \fi%
+        \ifx\Gin@ext\relax%
+            \def\Gin@base{\filename@area\filename@base}%
+            \edef\Gin@ext{\Gin@sepdefault\filename@ext}%
+            \global\boolfalse{jkureport@temp@exists}%
+        \fi%
+    \fi%
+    \ifx\Gin@ext\relax%
+        \global\boolfalse{jkureport@temp@exists}%
+    \else%
+        \xdef\jkureport@temp@file{\Gin@base\Gin@ext}%
+    \fi%
+    \endgroup%
+    \ifbool{jkureport@temp@exists}{%
+        \expandafter\@firstoftwo
+    }{%
+        \expandafter\@secondoftwo
+    }%
+}
+
+
+\newcommand{\jkureport@logo@getname}[3]{%
+    \jkureport@logopath/\jkureport@logoprefix%
+    \expandafter\notblank\expandafter{#1}{_#1}{}%
+    \expandafter\notblank\expandafter{#2}{_#2}{}%
+    \expandafter\notblank\expandafter{#3}{_#3}{}%
+}
+
+\newsavebox{\jkureport@logoblack@K}
+\sbox{\jkureport@logoblack@K}{%
+    \includegraphics[width=\jkureport@Klogo@width]{\jkureport@logo@getname{}{k}{black}}%
+}
+\newsavebox{\jkureport@logowhite@K}
+\sbox{\jkureport@logowhite@K}{%
+    \includegraphics[width=\jkureport@Klogo@width]{\jkureport@logo@getname{}{k}{white}}%
+}
+\settoheight{\jkureport@Klogo@height}{\usebox{\jkureport@logoblack@K}}
+
+\newcommand{\jkureport@Klogo}{%
+    \ifcsequal{\string\color@white}{\string\color@.}{%
+        \usebox{\jkureport@logowhite@K}%
+    }{%
+        \usebox{\jkureport@logoblack@K}%
+    }%
+}
+
+\newsavebox{\jkureport@logoblack@en}
+\newsavebox{\jkureport@logocolor@en}
+\newsavebox{\jkureport@logowhite@en}
+%\newsavebox{\jkureport@footerlogo@en}
+\newsavebox{\jkureport@logoblack@de}
+\newsavebox{\jkureport@logocolor@de}
+\newsavebox{\jkureport@logowhite@de}
+%\newsavebox{\jkureport@footerlogo@de}
+\newcommand{\jkureport@updatelogos}{%
+    \sbox{\jkureport@logoblack@en}{%
+        \jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{en}{black}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{en}{black}}%
+        }{\jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{}{black}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{}{black}}%
+        }{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{}{en}{black}}%
+        }}%
+    }
+    \sbox{\jkureport@logocolor@en}{%
+        \jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{en}{color}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{en}{color}}%
+        }{\jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{}{color}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{}{color}}%
+        }{%
+            \usebox{\jkureport@logoblack@en}%
+        }}%
+    }
+    \sbox{\jkureport@logowhite@en}{%
+        \jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{en}{white}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{en}{white}}%
+        }{\jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{}{white}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{}{white}}%
+        }{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{}{en}{white}}%
+        }}%
+    }
+    %\sbox{\jkureport@footerlogo@en}{%
+    %    \jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{en}{black_wide}}{%
+    %        \includegraphics[height=\jkureport@footerlogo@height]{\jkureport@logo@getname{\jkureport@institute@code}{en}{black_wide}}%
+    %    }{\jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{}{black_wide}}{%
+    %        \includegraphics[height=\jkureport@footerlogo@height]{\jkureport@logo@getname{\jkureport@institute@code}{}{black_wide}}%
+    %    }{%
+    %        \includegraphics[height=\jkureport@footerlogo@height]{\jkureport@logo@getname{}{en}{black_wide}}%
+    %    }}%
+    %}
+    \sbox{\jkureport@logoblack@de}{%
+        \jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{de}{black}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{de}{black}}%
+        }{\jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{}{black}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{}{black}}%
+        }{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{}{de}{black}}%
+        }}%
+    }
+    \sbox{\jkureport@logocolor@de}{%
+        \jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{de}{color}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{de}{color}}%
+        }{\jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{}{color}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{}{color}}%
+        }{%
+            \usebox{\jkureport@logoblack@de}%
+        }}%
+    }
+    \sbox{\jkureport@logowhite@de}{%
+        \jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{de}{white}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{de}{white}}%
+        }{\jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{}{white}}{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{\jkureport@institute@code}{}{white}}%
+        }{%
+            \includegraphics[height=\jkureport@logo@titlepage@height]{\jkureport@logo@getname{}{de}{white}}%
+        }}%
+    }
+    %\sbox{\jkureport@footerlogo@de}{%
+    %    \jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{de}{black_wide}}{%
+    %        \includegraphics[height=\jkureport@footerlogo@height]{\jkureport@logo@getname{\jkureport@institute@code}{de}{black_wide}}%
+    %    }{\jkureport@IfLogoFileExists{\jkureport@logo@getname{\jkureport@institute@code}{}{black_wide}}{%
+    %        \includegraphics[height=\jkureport@footerlogo@height]{\jkureport@logo@getname{\jkureport@institute@code}{}{black_wide}}%
+    %    }{%
+    %        \includegraphics[height=\jkureport@footerlogo@height]{\jkureport@logo@getname{}{de}{black_wide}}%
+    %    }}%
+    %}%
+}
+\jkureport@updatelogos% execute logo fetching now
+\newcommand{\jkureport@logoblack}{%
+    \ifcurrentbaselanguage{german}{%
+        \usebox{\jkureport@logoblack@de}%
+    }{%
+        \usebox{\jkureport@logoblack@en}%
+    }
+}
+\newcommand{\jkureport@logocolor}{%
+    \ifcurrentbaselanguage{german}{%
+        \usebox{\jkureport@logocolor@de}%
+    }{%
+        \usebox{\jkureport@logocolor@en}%
+    }
+}
+\newcommand{\jkureport@logowhite}{%
+    \ifcurrentbaselanguage{german}{%
+        \usebox{\jkureport@logowhite@de}%
+    }{%
+        \usebox{\jkureport@logowhite@en}%
+    }
+}
+\newcommand{\jkureport@logo}{%
+    \ifcsequal{\string\color@white}{\string\color@.}{%
+        \jkureport@logowhite%
+    }{\ifcsequal{\string\color@black}{\string\color@.}{%
+        \jkureport@logoblack%
+    }{%
+        \jkureport@logocolor%
+    }}%
+}
+%\newcommand{\jkureport@footerlogo}{%
+%    \ifcurrentbaselanguage{german}{%
+%        \usebox{\jkureport@footerlogo@de}%
+%    }{%
+%        \usebox{\jkureport@footerlogo@en}%
+%    }
+%}
+
+\newsavebox{\jkureport@logo@partner@color}
+\sbox{\jkureport@logo@partner@color}{}
+\newsavebox{\jkureport@logo@partner@white}
+\sbox{\jkureport@logo@partner@white}{}
+%\newsavebox{\jkureport@footerlogo@partner@color}
+%\sbox{\jkureport@footerlogo@partner@color}{}
+%\newsavebox{\jkureport@footerlogo@partner@white}
+%\sbox{\jkureport@footerlogo@partner@white}{}
+
+\newcommand{\jkureport@logoparams@scale}{1.0}
+\pgfkeysdef{/jkureport/logoparams/scale}{%
+    \renewcommand{\jkureport@logoparams@scale}{#1}%
+}
+%\pgfkeysdef{/jkureport/footerlogoparams/footer scale}{%
+%    \renewcommand{\jkureport@logoparams@scale}{#1}%
+%}
+\newlength{\jkureport@logoparams@offset}
+\setlength{\jkureport@logoparams@offset}{0mm}
+\pgfkeysdef{/jkureport/logoparams/offset}{%
+    \setlength{\jkureport@logoparams@offset}{#1}%
+}
+%\pgfkeysdef{/jkureport/footerlogoparams/footer offset}{%
+%    \setlength{\jkureport@logoparams@offset}{#1}%
+%}
+\newcommand{\jkureport@logoparams@white}{}
+\pgfkeysdef{/jkureport/logoparams/white}{%
+    \renewcommand{\jkureport@logoparams@white}{#1}%
+}
+
+% Command \partnerlogo[[footer] scale=factor,[footer] offset=horizontaloffset,white=filename]{filename}: use filename as partnerlogo, filename may be blank to disable the logo
+\newcommand{\partnerlogo}[2][]{%
+    \pgfqkeys{/jkureport/logoparams}{scale=1.0,offset=0mm,white={#2_white}}% set defaults
+    \pgfqkeys{/jkureport/logoparams}{.unknown/.code={},#1}%
+    \ifblank{#2}{%
+        \sbox{\jkureport@logo@partner@color}{}%
+        \sbox{\jkureport@logo@partner@white}{}%
+    }{%
+        \ifdimgreater{\jkureport@logoparams@offset}{\jkureport@logo@titlepage@hoffset}{%
+            \setlength{\jkureport@logoparams@offset}{\jkureport@logo@titlepage@hoffset}%
+        }{}%
+        \ifdimgreater{\jkureport@outermargin}{\dimexpr\jkureport@titlepage@marginpar + \jkureport@logoparams@offset - \jkureport@logoparams@scale\jkureport@partnerlogo@titlepage@width\relax}{%
+            \setlength{\jkureport@logoparams@offset}{\dimexpr\jkureport@logoparams@scale\jkureport@partnerlogo@titlepage@width - \jkureport@titlepage@marginpar + \jkureport@outermargin\relax}%
+        }{}%
+        \sbox{\jkureport@logo@partner@color}{%
+            \hspace*{-1\jkureport@logoparams@offset}%
+            \includegraphics[width=\jkureport@logoparams@scale\jkureport@partnerlogo@titlepage@width]{#2}%
+        }%
+        \sbox{\jkureport@logo@partner@white}{%
+            \notblank{\jkureport@logoparams@white}{%
+                \jkureport@IfLogoFileExists{\jkureport@logoparams@white}{%
+                    \hspace*{-1\jkureport@logoparams@offset}%
+                    \includegraphics[width=\jkureport@logoparams@scale\jkureport@partnerlogo@titlepage@width]{\jkureport@logoparams@white}%
+                }{%
+                    \usebox{\jkureport@logo@partner@color}%
+                }%
+            }{}%
+        }%
+    }%
+    %\footerpartnerlogo[#1]{#2}
+}
+
+%% Command \footerpartnerlogo[[footer] scale=factor,[footer] offset=verticaloffset]{filename}: use filename as partnerlogo (in footer only), filename may be blank to disable the logo
+%\newcommand{\footerpartnerlogo}[2][]{%
+%    \pgfqkeys{/jkureport/logoparams}{scale=1.0,offset=0mm,white={#2_white}}% set defaults
+%    \pgfqkeys{/jkureport/logoparams}{.unknown/.code={},#1}%
+%    \pgfqkeys{/jkureport/footerlogoparams}{.unknown/.code={},#1}% give "footer scale" / "footer offset" preceedence
+%    \ifblank{#2}{%
+%        \sbox{\jkureport@footerlogo@partner@color}{}%
+%        \sbox{\jkureport@footerlogo@partner@white}{}%
+%    }{%
+%        \ifdimgreater{\jkureport@logoparams@offset}{.5\dimexpr\jkureport@footerheight - \jkureport@logoparams@scale\jkureport@footerlogo@height\relax}{%
+%            \setlength{\jkureport@logoparams@offset}{.5\dimexpr\jkureport@footerheight - \jkureport@logoparams@scale\jkureport@footerlogo@height\relax}%
+%        }{}%
+%        \ifdimgreater{.5\dimexpr\jkureport@footerlogo@height - \jkureport@logoparams@scale\jkureport@footerlogo@height\relax}{\jkureport@logoparams@offset}{%
+%            \setlength{\jkureport@logoparams@offset}{.5\dimexpr\jkureport@footerlogo@height - \jkureport@logoparams@scale\jkureport@footerlogo@height\relax}%
+%        }{}%
+%        \sbox{\jkureport@footerlogo@partner@color}{%
+%            \raisebox{\dimexpr.5\dimexpr\jkureport@footerlogo@height - \jkureport@logoparams@scale\jkureport@footerlogo@height\relax - \jkureport@logoparams@offset\relax}{%
+%                \includegraphics[height=\jkureport@logoparams@scale\jkureport@footerlogo@height]{#2}%
+%            }%
+%        }%
+%        \sbox{\jkureport@footerlogo@partner@white}{%
+%            \notblank{\jkureport@logoparams@white}{%
+%                \jkureport@IfLogoFileExists{\jkureport@logoparams@white}{%
+%                    \raisebox{\dimexpr.5\dimexpr\jkureport@footerlogo@height - \jkureport@logoparams@scale\jkureport@footerlogo@height\relax - \jkureport@logoparams@offset\relax}{%
+%                        \includegraphics[height=\jkureport@logoparams@scale\jkureport@footerlogo@height]{\jkureport@logoparams@white}%
+%                    }%
+%                }{%
+%                    \usebox{\jkureport@footerlogo@partner@color}%
+%                }%
+%            }{}%
+%        }%
+%    }%
+%}
+
+\newcommand{\jkureport@logo@partner}{%
+    \ifcsequal{\string\color@white}{\string\color@.}{%
+        \usebox{\jkureport@logo@partner@white}%
+    }{%
+        \usebox{\jkureport@logo@partner@color}%
+    }%
+}
+%\newcommand{\jkureport@footerlogo@partner}{%
+%    \ifcsequal{\string\color@white}{\string\color@.}{%
+%        \usebox{\jkureport@footerlogo@partner@white}%
+%    }{%
+%        \usebox{\jkureport@footerlogo@partner@color}%
+%    }%
+%}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Headings
+%% 
+
+\KOMAoption{listof}{totoc}
+\KOMAoption{bibliography}{totoc}
+\KOMAoption{index}{totoc}
+\KOMAoption{numbers}{noenddot}
+\KOMAoption{captions}{tableheading}
+\ifdef{\chapter}{%
+    \KOMAoption{chapterprefix}{true}
+    \renewcommand*{\chaptermarkformat}{\thechapter\autodot\enskip}%
+    \newcommand{\jkureport@appendixtocformat}[1]{\appendixname~#1}
+    %\newcommand{\jkureport@chaptertocformat}[1]{#1}
+    %\DeclareTOCStyleEntry[%
+    %    level:=chapter,indent:=chapter,numwidth:=chapter,
+    %    dynnumwidth=true,
+    %    entrynumberformat=\jkureport@chaptertocformat
+    %]{chapter}{chapter}
+    \DeclareTOCStyleEntry[%
+        level:=chapter,indent:=chapter,numwidth:=chapter,
+        dynnumwidth=true,
+        entrynumberformat=\jkureport@appendixtocformat
+    ]{chapter}{appendixchapter}
+    \newcommand*{\appendixmore}{%
+        \renewcommand*{\chaptermarkformat}{\appendixname~\thechapter\autodot\enskip}%
+        \patchcmd{\addchaptertocentry}%
+            {\addtocentrydefault{chapter}}%
+            {\addtocentrydefault{appendixchapter}}%
+            {}{}%
+    }
+}{%
+    \renewcommand*{\sectionformat}{\thesection.\enskip}
+    \renewcommand*{\sectionmarkformat}{\thesection.\enskip}
+    \newcommand{\jkureport@appendixtocformat}[1]{\appendixname~#1\unskip.\enskip}
+    \newcommand{\jkureport@sectiontocformat}[1]{#1\unskip.\enskip}
+    \DeclareTOCStyleEntry[%
+        level:=section,indent:=section,numwidth:=section,
+        numsep=0pt,
+        dynnumwidth=true,
+        entrynumberformat=\jkureport@sectiontocformat
+    ]{section}{section}
+    \DeclareTOCStyleEntry[%
+        level:=section,indent:=section,numwidth:=section,
+        numsep=0pt,
+        dynnumwidth=true,
+        entrynumberformat=\jkureport@appendixtocformat
+    ]{section}{appendixsection}
+    \newcommand*{\appendixmore}{%
+        \renewcommand*{\sectionformat}{\appendixname~\thesection.\enskip}%
+        \renewcommand*{\sectionmarkformat}{\appendixname~\thesection.\enskip}%
+        \patchcmd{\addsectiontocentry}%
+            {\addtocentrydefault{section}}%
+            {\addtocentrydefault{appendixsection}}%
+            {}{}%
+    }
+}
+
+\ifdef{\chaptermark}{%
+    \renewcommand{\chaptermark}[1]{\markleft{\Ifnumbered{chapter}{\chaptermarkformat}{}#1}}
+    \renewcommand{\addchapmark}[1]{\markleft{#1}}
+}{%
+    \markleft{\protect\jkureport@inserttitleshort}
+}
+\renewcommand{\sectionmark}[1]{\markright{\Ifnumbered{section}{\sectionmarkformat}{}#1}}
+\renewcommand{\addsecmark}[1]{\markright{#1}}
+
+\BeforeTOCHead[toc]{%
+    \phantomsection%
+    \label{front:toc}%
+    \currentpdfbookmark{\contentsname}{front:toc}%
+}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Texts and Translations
+%% 
+
+% Headings
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\abstractname}{Kurzfassung}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\keywordsname}{Keywords}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\keywordsname}{Schlagwörter}
+
+% Autoref labels
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\subsectionautorefname}{\sectionautorefname}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\subsectionautorefname}{\sectionautorefname}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\subsubsectionautorefname}{\sectionautorefname}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\subsubsectionautorefname}{\sectionautorefname}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\subsubsubsectionautorefname}{\sectionautorefname}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\subsubsubsectionautorefname}{\sectionautorefname}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\subfigureautorefname}{\figureautorefname}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\subfigureautorefname}{\figureautorefname}
+
+% Theses
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@authorname}{Author}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@authorname}{Eingereicht von}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@submissiondepartmentname}{Submission}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@submissiondepartmentname}{Angefertigt am}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@supervisorname}{Thesis Supervisor}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@supervisorname}{Beurteiler\ifbool{jkureport@gender@f}{in}{}}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@firstsupervisorname}{First Supervisor}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@firstsupervisorname}{Erstbeurteiler\ifbool{jkureport@gender@f}{in}{}}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@secondsupervisorname}{Second Supervisor}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@secondsupervisorname}{Zweitbeurteiler\ifbool{jkureport@gender@f}{in}{}}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@thirdsupervisorname}{Third Supervisor}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@thirdsupervisorname}{Drittbeurteiler\ifbool{jkureport@gender@f}{in}{}}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@assistantsupervisorname}{Assistant Thesis Supervisor}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@assistantsupervisorname}{Mitbetreuung}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@phdthesisname}{Doctoral Thesis}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@phdthesisname}{Dissertation}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@mastersthesisname}{Master's Thesis}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@mastersthesisname}{Masterarbeit}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@diplomathesisname}{Diploma Thesis}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@diplomathesisname}{Diplomarbeit}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@bachelorsthesisname}{Bachelor's Thesis}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@bachelorsthesisname}{Bachelorarbeit}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@conferdegreename}{to confer the academic degree of}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@conferdegreename}{zur Erlangung des akademischen Grades}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@phdprogramname}{in the Doctoral Program}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@phdprogramname}{im Doktoratsstudium der}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@mastersprogramname}{in the Master's Program}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@mastersprogramname}{im Masterstudium}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@diplomaprogramname}{in the Diploma Program}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@diplomaprogramname}{im Diplomstudium}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@bachelorsprogramname}{in the Bachelor's Program}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@bachelorsprogramname}{im Bachelorstudium}
+
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@declarationname}{Sworn Declaration}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@declarationname}{Eidesstattliche Erklärung}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Headers and Footers
+%% 
+
+\newbool{jkureport@temp@odd}
+\newcommand{\jkureport@heading@left@standard}[1]{%
+    \ifstrequal{#1}{odd}{\booltrue{jkureport@temp@odd}}{\boolfalse{jkureport@temp@odd}}%
+    \begin{tikzpicture}[remember picture, overlay]
+    %\fill[fill=jkureport@bg] (current page.south west) rectangle (current page.north east);
+    %\fill[fill=green] (current page.south west) rectangle ($(current page.south west) + (5mm, 5mm)$);
+    %\fill[fill=green] (current page.north east) rectangle ($(current page.north east) - (5mm, 5mm)$);
+    \node[anchor=center,line width=0mm, inner sep=0mm] at ($(current page.center)$) {
+        \color{jkureport@fg}%
+        \usebox{\jkureport@watermark}%
+    };
+    \node[anchor=south west,line width=0mm, inner sep=0mm, xshift=\ifbool{jkureport@temp@odd}{\jkureport@oddsidemargin}{\jkureport@evensidemargin}] at ($(current page.north west) + (0mm, -\jkureport@topmargin - \headheight)$) {%
+        \color{jkureport@fg}%
+        \parbox[b]{\textwidth}{
+            \raggedleft%
+            \ifbool{jkureport@temp@odd}{}{\ifbool{@twoside}{\raggedright}{}}%
+            \linespread{1.0}%
+            \setlength{\parindent}{0mm}%
+            \setlength{\parskip}{0mm}%
+            \usekomafont{pageheadfoot}%
+            \usekomafont{pagehead}%
+            \vphantom{Gg}%
+            \ifbool{@twoside}{%
+                \ifbool{jkureport@temp@odd}{
+                    {\rightmark}\hfill{\usekomafont{pagenumber}\thepage}%
+                }{%
+                    {\usekomafont{pagenumber}\thepage}\hfill{\leftmark}%
+                }%
+            }{%
+                {\leftmark}\hfill{\usekomafont{pagenumber}\thepage}%
+            }%
+            \vphantom{Gg}%
+        }%
+    };
+    \end{tikzpicture}%
+}
+
+\newcommand{\jkureport@footer@left@standard}[1]{%
+    \ifstrequal{#1}{odd}{\booltrue{jkureport@temp@odd}}{\boolfalse{jkureport@temp@odd}}%
+    \begin{tikzpicture}[remember picture, overlay]
+    %\fill[fill=jkureport@bg] (current page.south west) rectangle (current page.north east);
+    %\fill[fill=green] (current page.south west) rectangle ($(current page.south west) + (5mm, 5mm)$);
+    %\fill[fill=green] (current page.north east) rectangle ($(current page.north east) - (5mm, 5mm)$);
+    \node[anchor=south west,line width=0mm, inner sep=0mm, xshift=\ifbool{jkureport@temp@odd}{\jkureport@oddsidemargin}{\jkureport@evensidemargin}] at ($(current page.north west) + (0mm, -\jkureport@topmargin - \headheight - \headsep - \textheight - \footskip)$) {%
+        \color{jkureport@fg}%
+        \parbox[b]{\textwidth}{
+            \raggedleft%
+            \ifbool{jkureport@temp@odd}{}{\ifbool{@twoside}{\raggedright}{}}%
+            \linespread{1.0}%
+            \setlength{\parindent}{0mm}%
+            \setlength{\parskip}{0mm}%
+            \usekomafont{pageheadfoot}%
+            \usekomafont{pagefoot}%
+            \vphantom{Gg}%
+            \ifbool{@twoside}{%
+                \ifbool{jkureport@temp@odd}{
+                    {\jkureport@insertbottommark}%
+                }{%
+                    {\jkureport@insertreportnumber}%
+                }%
+            }{%
+                {\jkureport@insertbottommark}\hfill{\jkureport@insertreportnumber}%
+            }%
+            \vphantom{Gg}%
+        }%
+    };
+    \end{tikzpicture}%
+}
+
+\newcommand{\jkureport@footer@left@plain}[1]{%
+    \ifstrequal{#1}{odd}{\booltrue{jkureport@temp@odd}}{\boolfalse{jkureport@temp@odd}}%
+    \begin{tikzpicture}[remember picture, overlay]
+    %\fill[fill=jkureport@bg] (current page.south west) rectangle (current page.north east);
+    %\fill[fill=green] (current page.south west) rectangle ($(current page.south west) + (5mm, 5mm)$);
+    %\fill[fill=green] (current page.north east) rectangle ($(current page.north east) - (5mm, 5mm)$);
+    \node[anchor=south west,line width=0mm, inner sep=0mm, xshift=\ifbool{jkureport@temp@odd}{\jkureport@oddsidemargin}{\jkureport@evensidemargin}] at ($(current page.north west) + (0mm, -\jkureport@topmargin - \headheight - \headsep - \textheight - \footskip)$) {%
+        \color{jkureport@fg}%
+        \parbox[b]{\textwidth}{
+            \centering%
+            \linespread{1.0}%
+            \setlength{\parindent}{0mm}%
+            \setlength{\parskip}{0mm}%
+            \usekomafont{pageheadfoot}%
+            \usekomafont{pagefoot}%
+            \usekomafont{pagenumber}%
+            \vphantom{Gg}%
+            \thepage%
+            \vphantom{Gg}%
+        }%
+    };
+    \end{tikzpicture}%
+}
+
+\defpairofpagestyles{normal}{%
+    \lehead[]{\jkureport@heading@left@standard{even}}%
+    \cehead[]{}%
+    \rehead[]{}%
+    \lohead[]{\jkureport@heading@left@standard{odd}}%
+    \cohead[]{}%
+    \rohead[]{}%
+    \lefoot[\jkureport@footer@left@plain{even}]{\jkureport@footer@left@standard{even}}%
+    \cefoot[]{}%
+    \refoot[]{}%
+    \lofoot[\jkureport@footer@left@plain{odd}]{\jkureport@footer@left@standard{odd}}%
+    \cofoot[]{}%
+    \rofoot[]{}%
+}
+
+\pagestyle{normal}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Page watermarking
+%% 
+
+\colorlet{jkureport@watermark@color}{jkuGray!50}
+\newsavebox{\jkureport@watermark}
+\sbox{\jkureport@watermark}{}
+
+% Command \setwatermark{large text}{small text}: adds a watermark text to all pages
+\newcommand{\setwatermark}[2]{%
+    \sbox{\jkureport@watermark}{%
+        \rotatebox{60}{%
+            \begin{minipage}[t][\textwidth][c]{\paperheight}%
+            \centering%
+            \color{jkureport@watermark@color}%
+            \setlength{\parindent}{0mm}%
+            \setlength{\parskip}{0mm}%
+            \ifstrempty{#1}{}{%
+                \usekomafont{watermarktitle}%
+                {#1}%
+            }%
+            \ifstrempty{#2}{}{%
+                \ifstrempty{#1}{}{%
+                    \par
+                    \vspace*{5mm}%
+                }%
+                \usekomafont{watermark}%
+                {#2}%
+            }
+            \end{minipage}%
+        }%
+    }
+}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Title page
+%% 
+
+\newcommand{\jkureport@heading@left@titlepage}[1]{%
+    \ifstrequal{#1}{odd}{\booltrue{jkureport@temp@odd}}{\boolfalse{jkureport@temp@odd}}%
+    \begin{tikzpicture}[remember picture, overlay]
+    %\fill[fill=jkureport@bg] (current page.south west) rectangle (current page.north east);
+    %\fill[fill=green] (current page.south west) rectangle ($(current page.south west) + (5mm, 5mm)$);
+    %\fill[fill=green] (current page.north east) rectangle ($(current page.north east) - (5mm, 5mm)$);
+    \node[anchor=center,line width=0mm, inner sep=0mm] at ($(current page.center)$) {
+        \color{jkureport@fg}%
+        \usebox{\jkureport@watermark}%
+    };
+    \node[anchor=south west,line width=0mm, inner sep=0mm] at ($(current page.south west) + (\jkureport@oddsidemargin + \jkureport@titlepage@marginleft, \jkureport@Klogo@titlepage@offset)$) {
+        \color{jkureport@fg}%
+        \jkureport@Klogo%
+    };
+    \node[anchor=north west,line width=0mm, inner sep=0mm] at ($(current page.north east) - (\jkureport@titlepage@marginpar + \jkureport@logo@titlepage@hoffset, \jkureport@logo@titlepage@offset)$) {%
+        \color{jkureport@fg}%
+        \ifbool{jkureport@titlelogo}{%
+            \resizebox{!}{\jkureport@logo@titlepage@height}{\jkureport@logo}%
+        }{}%
+    };
+    \node[anchor=north west,line width=0mm, inner sep=0mm] at ($(current page.south east) - (\jkureport@titlepage@marginpar, -\jkureport@imprint@titlepage@offset)$) {%
+        \color{jkureport@fg}%
+        \ifbool{jkureport@imprint}{%
+            \jkureport@insertimprint%
+        }{}%
+    };
+    \node[anchor=south west,line width=0mm, inner sep=0mm, yshift=\notbool{jkureport@imprint}{-\jkureport@imprint@titlepage@offset}{-\jkureport@outermargin}] at ($(current page.south east) - (\jkureport@titlepage@marginpar, -\jkureport@imprint@titlepage@offset - \jkureport@outermargin - \jkureport@partnerlogo@titlepage@offset)$) {%
+        \color{jkureport@fg}%
+        {%
+            \jkureport@logo@partner%
+        }%
+    };
+    \node[anchor=north west,line width=0mm, inner sep=0mm] at ($(current page.north east) - (\jkureport@titlepage@marginpar, \jkureport@authoring@titlepage@offset)$) {%
+        \color{jkureport@fg}%
+        \parbox[t]{\dimexpr\jkureport@titlepage@marginpar-\jkureport@outermargin\relax}{%
+            \raggedright%
+            \linespread{1.0}%
+            \setlength{\parindent}{0mm}%
+            \setlength{\parskip}{0mm}%
+            \usekomafont{authoring}%
+            \begingroup
+            \vphantom{Gg}%
+            \jkureport@insertauthor%
+            \endgroup
+            \begingroup
+            \usekomafont{date}%
+            \ifdefempty{\jkureport@insertreportnumber}{}{%
+                \jkureport@insertreportnumber\par%
+                \hfill\par%
+            }
+            \jkureport@insertdate%
+            \endgroup
+        }%
+    };
+    \node[anchor=south west,line width=0mm, inner sep=0mm] at ($(current page.south west) + (\jkureport@oddsidemargin + \jkureport@titlepage@marginleft, \jkureport@Klogo@titlepage@offset + \jkureport@Klogo@height)$) {%
+        \color{jkureport@fg}%
+        \parbox[t]{\dimexpr\paperwidth - \jkureport@oddsidemargin - \jkureport@titlepage@marginleft - \jkureport@titlepage@marginpar - \jkureport@logo@titlepage@hoffset\relax}{%
+            \raggedright%
+            \linespread{1.0}%
+            \setlength{\parindent}{0mm}%
+            \setlength{\parskip}{0mm}%
+            \usekomafont{title}%
+            \jkureport@inserttitle%
+            \vphantom{Gg}%
+            \par%
+            \vspace*{1ex}%
+        }%
+    };
+    \node[anchor=north west,line width=0mm, inner sep=0mm] at ($(current page.south west) + (\jkureport@oddsidemargin + \jkureport@titlepage@marginleft, \jkureport@Klogo@titlepage@offset)$) {%
+        \color{jkureport@fg}%
+        \parbox[t]{\dimexpr\paperwidth - \jkureport@oddsidemargin - \jkureport@titlepage@marginleft - \jkureport@titlepage@marginpar - \jkureport@logo@titlepage@hoffset\relax}{%
+            \raggedright%
+            \linespread{1.0}%
+            \setlength{\parindent}{0mm}%
+            \setlength{\parskip}{0mm}%
+            \usekomafont{title}%
+            \vphantom{Gg}%
+            \par%
+            \usekomafont{subtitle}%
+            \vphantom{Gg}%
+            \jkureport@insertsubtitle%
+        }%
+    };
+    \node[anchor=south west,line width=0mm, inner sep=0mm] at ($(current page.south west) + (\jkureport@oddsidemargin + \jkureport@titlepage@marginleft, \jkureport@oddsidemargin + \jkureport@titlepage@marginleft)$) {%
+        \color{jkureport@fg}%
+        \parbox[b]{\dimexpr\paperwidth - \jkureport@oddsidemargin - \jkureport@titlepage@marginleft - \jkureport@titlepage@marginpar - \jkureport@logo@titlepage@hoffset\relax}{%
+            \linespread{1.0}%
+            \setlength{\parindent}{0mm}%
+            \setlength{\parskip}{1ex}%
+            \usekomafont{abstract}%
+            \jkureport@insertabstract%
+            \jkureport@insertkeywords%
+            \jkureport@insertrevisionblock%
+            \vphantom{Gg}%
+        }%
+    };
+    \end{tikzpicture}%
+}
+
+\newcommand{\jkureport@footer@left@titlepage}[1]{%
+    \ifstrequal{#1}{odd}{\booltrue{jkureport@temp@odd}}{\boolfalse{jkureport@temp@odd}}%
+}
+
+\defpairofpagestyles{titlepage}{%
+    \lehead[]{\jkureport@heading@left@titlepage{even}}%
+    \cehead[]{}%
+    \rehead[]{}%
+    \lohead[]{\jkureport@heading@left@titlepage{odd}}%
+    \cohead[]{}%
+    \rohead[]{}%
+    \lefoot[]{\jkureport@footer@left@titlepage{even}}%
+    \cefoot[]{}%
+    \refoot[]{}%
+    \lofoot[]{\jkureport@footer@left@titlepage{odd}}%
+    \cofoot[]{}%
+    \rofoot[]{}%
+}
+
+%TODO: Make text dynamically configurable
+\newcommand{\jkureport@insertimprint}{%
+    \parbox[t]{\jkureport@titlepage@marginpar}{%
+        \raggedright%
+        \linespread{1.0}%
+        \setlength{\parindent}{0pt}%
+        \setlength{\parskip}{0pt}%
+        \usekomafont{imprint}%
+        \begingroup
+        \usekomafont{imprintname}%
+        \MakeUppercase{Johannes Kepler}\\
+        \ifcurrentbaselanguage{german}{%
+            \MakeUppercase{Universit\"{a}t Linz}
+        }{%
+            \MakeUppercase{University Linz}
+        }\\
+        \endgroup
+        Altenberger Stra{\ss}e 69\\
+        4040 Linz, Austria\\
+        \href{https://jku.at/}{\color{jkureport@fg}jku.at}\\
+        %\hfill
+    }%
+}
+
+\newcommand{\jkureport@inserttitle}{%
+    \begingroup%
+    \renewcommand{\titlesmall}[1]{%
+        {\usekomafont{titlehead}{##1}}%
+    }
+    \ifbool{jkureport@titlecaps}{%
+        \MakeUppercase{\@title}%
+    }{%
+        \protect\@title%
+    }%
+    \endgroup%
+}
+\newcommand{\jkureport@inserttitleshort}{\protect\@title}
+\newcommand{\jkureport@insertsubtitle}{%
+    \begingroup%
+    \ifdefstring{\jkureport@doctype}{thesis}{%
+        \setlength{\parskip}{\jkureport@subtitleparskip}%
+        \jkureport@insertthesisname\par%
+        \ifdefempty{\jkureport@insertdegreetype}{}{%
+            {\usekomafont{subtitlesmall}\jkureport@conferdegreename}\par%
+            \jkureport@insertdegreetype\par%
+        }%
+        \ifdefempty{\jkureport@insertdegreeprogram}{}{%
+            {\usekomafont{subtitlesmall}%
+            \ifdefstring{\jkureport@docsubtype}{phd}{%
+                \jkureport@phdprogramname%
+            }{\ifdefstring{\jkureport@docsubtype}{master}{%
+                \jkureport@mastersprogramname%
+            }{\ifdefstring{\jkureport@docsubtype}{diploma}{%
+                \jkureport@diplomaprogramname%
+            }{\ifdefstring{\jkureport@docsubtype}{bachelor}{%
+                \jkureport@bachelorsprogramname%
+            }}}}%
+            }\par%
+            \jkureport@insertdegreeprogram\par%
+        }%
+    }{%
+        \protect\@subtitle%
+    }%
+    \endgroup%
+}
+\newcommand{\jkureport@insertabstract}{}
+\newcommand{\jkureport@insertkeywords}{}
+\newcommand{\jkureport@insertrevisionblock}{}
+\newcommand{\jkureport@insertreportnumber}{}
+\newcommand{\jkureport@insertbottommark}{}
+\newcommand{\jkureport@insertauthor}{%
+    \begingroup%
+    \def\prefix##1{\begingroup\usekomafont{authorprefixsuffix}\mbox{##1}\endgroup\ \ignorespaces}%
+    \def\suffix##1{\unskip\begingroup\usekomafont{authorprefixsuffix}, \mbox{##1}\endgroup}%
+    \def\matno##1{\unskip\par\begingroup\usekomafont{authorprefixsuffix}\mbox{##1}\endgroup}%
+    \def\and{\unskip,\par\ignorespaces}%
+    \def\affiliation##1{}%
+    \ifdefstring{\jkureport@doctype}{thesis}{%
+        \renewcommand{\jkureport@authorcontact}[2]{}%
+        \jkureport@authorname\par%
+        {\usekomafont{author}\@author}\par%
+        \hfill\par%
+        \ifdefempty{\jkureport@insertsubmissiondepartment}{}{%
+            \jkureport@submissiondepartmentname\par%
+            {\usekomafont{author}\jkureport@insertsubmissiondepartment}\par%
+            \hfill\par%
+        }%
+        \ifcsempty{jkureport@insertsupervisor@1}{}{%
+            \csuse{jkureport@insertsupervisor@gender@1}%
+            \ifcsempty{jkureport@insertsupervisor@2}{%
+                \jkureport@supervisorname\par%
+            }{%
+                \jkureport@firstsupervisorname\par%
+            }%
+            {\usekomafont{author}\csuse{jkureport@insertsupervisor@1}}\par%
+            \hfill\par%
+            \ifcsempty{jkureport@insertsupervisor@2}{}{%
+                \csuse{jkureport@insertsupervisor@gender@1}%
+                \jkureport@secondsupervisorname\par%
+                {\usekomafont{author}\csuse{jkureport@insertsupervisor@2}}\par%
+                \hfill\par%
+                \ifcsempty{jkureport@insertsupervisor@3}{}{%
+                    \csuse{jkureport@insertsupervisor@gender@1}%
+                    \jkureport@thirdsupervisorname\par%
+                    {\usekomafont{author}\csuse{jkureport@insertsupervisor@3}}\par%
+                    \hfill\par%
+                }%
+            }%
+        }%
+        \ifdefempty{\jkureport@insertassistantsupervisor}{}{%
+            \jkureport@assistantsupervisorname\par%
+            {\usekomafont{author}\jkureport@insertassistantsupervisor}\par%
+            \hfill\par%
+        }%
+    }{%
+        \renewcommand\affiliation[1]{%
+            \par%
+            \begingroup%
+            \usekomafont{authoraffiliation}%
+            {##1}%
+            \endgroup%
+        }%
+        {\usekomafont{author}\@author}%
+        \par%
+        \hfill\par%
+    }%
+    \endgroup%
+}
+\newcommand{\jkureport@preparepdfauthor}[1]{%
+    \begingroup
+    \def\prefix##1{\ignorespaces}%
+    \def\suffix##1{\ignorespaces}%
+    \def\matno##1{\ignorespaces}%
+    \def\and{\ignorespaces, \ignorespaces}%
+    \def\affiliation##1{\ignorespaces}%
+    \def\authorweb[##1]{\authorweb}%
+    \def\authorweb##1{}%
+    \renewcommand{\jkureport@authorcontact}[2]{\ignorespaces}%
+    \edef\@temp{\endgroup\def\noexpand\jkureport@insertpdfauthor{#1}}\@temp%
+}
+\newcommand{\jkureport@insertsubmissiondate}{%
+    \begingroup%
+    \DTMsetstyle{iso}%
+    \edef\@tmp{\noexpand\DTMsavedate{submissiondate}{\@date}}\@tmp%
+    \DTMmonthname{\DTMfetchmonth{submissiondate}}~\DTMfetchyear{submissiondate}%
+    \endgroup%
+}
+\newcommand{\jkureport@insertdate}{%
+    \ifdefstring{\jkureport@doctype}{thesis}{%
+        \jkureport@insertsubmissiondate%
+    }{%
+        \protect\@date%
+    }%
+}
+\newcommand{\jkureport@insertplace}{Linz}%
+\newcommand{\jkureport@insertsubmissiondepartment}{}
+\newbool{jkureport@gender@f}
+\expandafter\newcommand\csname jkureport@insertsupervisor@1\endcsname{}
+\expandafter\newcommand\csname jkureport@insertsupervisor@2\endcsname{}
+\expandafter\newcommand\csname jkureport@insertsupervisor@3\endcsname{}
+\expandafter\newcommand\csname jkureport@insertsupervisor@gender@1\endcsname{}
+\expandafter\newcommand\csname jkureport@insertsupervisor@gender@2\endcsname{}
+\expandafter\newcommand\csname jkureport@insertsupervisor@gender@3\endcsname{}
+\newcommand{\jkureport@insertassistantsupervisor}{}
+\newcommand{\jkureport@insertthesisname}{%
+    \ifdefstring{\jkureport@doctype}{thesis}{%
+        \ifdefstring{\jkureport@docsubtype}{phd}{%
+            \jkureport@phdthesisname%
+        }{\ifdefstring{\jkureport@docsubtype}{master}{%
+            \jkureport@mastersthesisname%
+        }{\ifdefstring{\jkureport@docsubtype}{diploma}{%
+            \jkureport@diplomathesisname%
+        }{\ifdefstring{\jkureport@docsubtype}{bachelor}{%
+            \jkureport@bachelorsthesisname%
+        }}}}%
+    }{}%
+}
+\newcommand{\jkureport@insertdegreetype}{}
+\newcommand{\jkureport@insertdegreeprogram}{}
+
+
+\renewcommand{\title}[1]{%
+    \gdef\@title{#1}%
+    \hypersetup{%
+        pdftitle={\@title},
+    }%
+}
+
+\renewcommand{\author}[1]{%
+    \gdef\@author{#1}%
+    \jkureport@preparepdfauthor{#1}%
+    \hypersetup{%
+        pdfauthor={\jkureport@insertpdfauthor},
+    }%
+}
+
+% Command \maketitle[FACULTY]: insert a title page, automatically wrap into a frame using the given color mode (mode defaults to global default color mode)
+\renewcommand{\maketitle}[1][]{
+    \begingroup%
+    \setcolormode{#1}%
+    \begin{titlepage}%
+    \thispagestyle{titlepage}%
+    \phantom{Gg}
+    \end{titlepage}
+    \clearpage%
+    \endgroup%
+}
+
+% Command \titlesmall{text}: switches to small font size inside title
+\newcommand{\titlesmall}[1]{{#1}}
+
+% Command \titleshort{text}: short version of document title (defaults to full document title)
+\newcommand{\titleshort}[1]{%
+    \renewcommand{\jkureport@inserttitleshort}{{#1}}%
+}
+
+% Command \abstract{text}: set the document abstract (only defined for document classes that support an abstract on the title page)
+% Environment abstract: set the document abstract on a dedicated page (only defined for document classes that do not support an abstract on the title page)
+% Environment abstract*: set the document abstract on a dedicated page without enforcing a page break (only defined for document classes that do not support an abstract on the title page)
+\ifdef{\abstract}{%
+    \renewcommand{\abstract}[1]{%
+        \ifstrempty{#1}{%
+            \renewcommand{\jkureport@insertabstract}{}%
+        }{%
+            \renewcommand{\jkureport@insertabstract}{%
+                \paragraph*{\usekomafont{abstractname}\abstractname}%
+                {#1}%
+            }%
+        }%
+    }
+}{%
+    \newenvironment{abstract*}{%
+        \ifdef{\chapter}{%
+            \addchap{\abstractname}%
+        }{%
+            \addsec{\abstractname}%
+        }%
+    }{%
+    }
+    \newenvironment{abstract}{%
+        \csuse{abstract*}
+    }{%
+        \csuse{endabstract*}%
+        \clearpage%
+    }
+}
+
+% Command \keywords{text}: set the document keywords
+\ifdef{\keywords}{}{%
+    \newcommand{\keywords}[1]{}
+}
+\renewcommand{\keywords}[1]{%
+    \ifbool{jkureport@hyperref@automatic}{%
+        \hypersetup{pdfkeywords={#1}}%
+    }{}%
+    \ifstrempty{#1}{%
+        \renewcommand{\jkureport@insertkeywords}{}%
+    }{%
+        \renewcommand{\jkureport@insertkeywords}{%
+            \paragraph*{\usekomafont{abstractname}\keywordsname}%
+            {#1}%
+        }%
+    }%
+}
+
+% Command \revisionblock{text}: set the document revision block
+\newcommand{\revisionblock}[1]{%
+    \ifstrempty{#1}{%
+        \renewcommand{\jkureport@insertrevisionblock}{}%
+    }{%
+        \renewcommand{\jkureport@insertrevisionblock}{%
+            \par%
+            \bigskip%
+            {#1}%
+        }%
+    }%
+}
+
+% Command \reportnumber{number}: set the report number
+\newcommand{\reportnumber}[1]{\renewcommand{\jkureport@insertreportnumber}{{#1}}}
+
+% Command \setbottommark{text}: set the bottom mark (in document footer)
+\newcommand{\setbottommark}[1]{\renewcommand{\jkureport@insertbottommark}{{#1}}}
+
+
+% Author metadata
+
+% Command \prefix{prefixed academic title}: marks the prefixed academic titles of an author/supervisor/etc.
+% Command \suffix{suffixed academic title}: marks the suffixed academic titles of an author/supervisor/etc.
+% Command \affiliation{affiliation}: adds an affiliation to an author entry
+
+\newcommand{\jkureport@authorcontact}[2]{%
+    \par%
+    \begin{minipage}[c][\baselineskip][c]{1.5em}
+    \raggedright%
+    \usekomafont{authoraffiliation}%
+    {#1}
+    \end{minipage}%
+    \begin{minipage}[c][\baselineskip][c]{\dimexpr\linewidth-1.5em\relax}
+    \raggedright%
+    \usekomafont{authoraffiliation}%
+    {#2}
+    \end{minipage}%
+}%
+% Command \noauthorlogos: disables fancy logos in author contact information
+\newcommand{\noauthorlogos}{\renewcommand{\jkureport@authorcontact}[2]{{\usekomafont{authoraffiliation}{##2}}}}
+% Command \authorphone{number}: adds a phone number to the author entry
+\newcommand{\authorphone}[1]{\jkureport@authorcontact{\reflectbox{\faPhone}}{#1}}
+% Command \authorfax{number}: adds a fax number to the author entry
+\newcommand{\authorfax}[1]{\jkureport@authorcontact{\faFax}{#1}}
+% Command \authormail{address}: adds an e-mail address to an author entry
+\newcommand{\authormail}[1]{\jkureport@authorcontact{\faAt}{\mailto{#1}}}
+% Command \authorweb[real url]{display url}: adds a URL to an author entry
+\newcommand{\authorweb}[2][]{\jkureport@authorcontact{\faGlobe}{\prettyurl[#1]{#2}}}
+% Command \authornewline: adds a phone number to the author entry
+\newcommand{\authornewline}{\jkureport@authorcontact{}{}}
+
+
+% Thesis metadata
+
+% Command \submissiondepartment{institute or department}: set the department that the thesis is submitted at
+\newcommand{\submissiondepartment}[1]{%
+    \renewcommand{\jkureport@insertsubmissiondepartment}{#1}
+}
+
+% Command \submissionplace{place}: set the place of submission (typically `Linz', which is also the default)
+\newcommand{\submissionplace}[1]{%
+    \renewcommand{\jkureport@insertplace}{#1}
+}
+
+\newcommand{\jkureport@supervisorparams@num}{}%
+\newcommand{\jkureport@supervisorparams@gender}{}%
+\pgfkeysdefnargs{/jkureport/supervisorparams/0}{0}{%
+    \renewcommand{\jkureport@supervisorparams@num}{1}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/1}{0}{%
+    \renewcommand{\jkureport@supervisorparams@num}{1}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/first}{0}{%
+    \renewcommand{\jkureport@supervisorparams@num}{1}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/2}{0}{%
+    \renewcommand{\jkureport@supervisorparams@num}{2}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/second}{0}{%
+    \renewcommand{\jkureport@supervisorparams@num}{2}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/3}{0}{%
+    \renewcommand{\jkureport@supervisorparams@num}{3}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/third}{0}{%
+    \renewcommand{\jkureport@supervisorparams@num}{3}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/male}{0}{%
+    \renewcommand{\jkureport@supervisorparams@gender}{male}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/m}{0}{%
+    \renewcommand{\jkureport@supervisorparams@gender}{male}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/female}{0}{%
+    \renewcommand{\jkureport@supervisorparams@gender}{female}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/f}{0}{%
+    \renewcommand{\jkureport@supervisorparams@gender}{female}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/w}{0}{%
+    \renewcommand{\jkureport@supervisorparams@gender}{female}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/other}{0}{%
+    \renewcommand{\jkureport@supervisorparams@gender}{other}%
+}
+\pgfkeysdefnargs{/jkureport/supervisorparams/x}{0}{%
+    \renewcommand{\jkureport@supervisorparams@gender}{other}%
+}
+
+% Command \supervisor[number,gender]{name}: sets the name of the supervisor (where number optionally defines the rank of the supervisor and gender if the author is male or female)
+\newcommand{\supervisor}[2][]{%
+    \pgfqkeys{/jkureport/supervisorparams}{1,male}% set defaults
+    \pgfqkeys{/jkureport/supervisorparams}{.unknown/.code={},#1}%
+    \expandafter\renewcommand\csname jkureport@insertsupervisor@\jkureport@supervisorparams@num\endcsname{#2}
+    \ifdefstring{\jkureport@supervisorparams@gender}{female}{%
+        \expandafter\renewcommand\csname jkureport@insertsupervisor@gender@\jkureport@supervisorparams@num\endcsname{\booltrue{jkureport@gender@f}}
+    }{%
+        \expandafter\renewcommand\csname jkureport@insertsupervisor@gender@\jkureport@supervisorparams@num\endcsname{\boolfalse{jkureport@gender@f}}
+    }
+}
+
+% Command \assistantsupervisor{name}: sets the name of the assistant supervisor(s)
+\newcommand{\assistantsupervisor}[1]{%
+    \renewcommand{\jkureport@insertassistantsupervisor}{#1}
+}
+
+% Command \degree{degree}{degree program}: sets the degree and degree program name
+\newcommand{\degree}[2]{%
+    \renewcommand{\jkureport@insertdegreetype}{#1}
+    \renewcommand{\jkureport@insertdegreeprogram}{#2}
+}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Itemization and enumeration
+%% 
+
+\setlist{leftmargin=1.75em,topsep=.125ex,partopsep=.125ex,itemsep=\dimexpr-\itemsep+.125ex\relax}
+\renewcommand{\labelitemi}{\rule[0.20ex]{0.95ex}{0.95ex}\hspace*{0.25em}}
+\renewcommand{\labelitemii}{%
+    \raisebox{0.675ex}{%
+        \mbox{%
+            \setlength\unitlength{1ex}%
+            \begin{picture}(1,1)(0,0)%
+            \put (0,0){\circle*{1}}%
+            \end{picture}%
+        }%
+        \hspace*{-0.5ex}%
+        \hspace*{0.25em}%
+    }%
+}
+\renewcommand{\labelitemiii}{\rule[0.575ex]{0.95ex}{0.20ex}\hspace*{0.25em}}
+
+% Environment tightlist: Tighter line spacing for itemize/enumerate lists (wrap any list within this environment)
+\newenvironment{tightlist}{%
+    \begingroup%
+    \def\@listi{\leftmargin\leftmargini
+                \topsep  0\p@ \@plus\p@
+                \parsep  0\p@ \@plus\p@
+                \itemsep \parsep}%
+    \let\@listI\@listi%
+    \def\@listii{\leftmargin\leftmarginii
+                 \topsep  0\p@ \@plus\p@
+                 \parsep  0\p@ \@plus\p@
+                 \itemsep 0\p@ \@plus\p@}%
+    \def\@listiii{\leftmargin\leftmarginii
+                  \topsep  0\p@ \@plus\p@
+                  \parsep  0\p@ \@plus\p@
+                  \itemsep 0\p@ \@plus\p@}%
+    \ifhmode\par\nointerlineskip\fi%
+}{%
+    \nointerlineskip%
+    \endgroup%
+}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Sanity checking
+%% 
+
+\ifdefstring{\jkureport@doctype}{thesis}{%
+    \ifdefstring{\KOMAClassName}{scrbook}{}{%
+        \PackageWarning{jkureport}{A thesis should use document class `scrbook' but you seem to use `\KOMAClassName'.}%
+    }%
+}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Thesis declarations
+%% 
+
+\newcommand{\makedeclaration}{%
+    \begingroup%
+    \ifdefstring{\jkureport@doctype}{thesis}{%
+        \phantomsection%
+        \label{front:sworndeclaration}%
+        \currentpdfbookmark{\jkureport@declarationname}{front:sworndeclaration}%
+        \ifdef{\chapter}{%
+            \addchap*{\jkureport@declarationname}%
+        }{%
+            \addsec*{\jkureport@declarationname}%
+        }%
+        \ifcurrentbaselanguage{german}{%
+            Ich erkläre an Eides statt, dass ich die vorliegende {\jkureport@insertthesisname} selbstständig und ohne fremde Hilfe verfasst, andere als die angegebenen Quellen und Hilfsmittel nicht benutzt bzw. die wörtlich oder sinngemäß entnommenen Stellen als solche kenntlich gemacht habe.%
+            \par%
+            Die vorliegende {\jkureport@insertthesisname} ist mit dem elektronisch übermittelten Textdokument identisch.%
+            \par%
+        }{%
+            I hereby declare under oath that the submitted {\jkureport@insertthesisname} has been written solely by me without any third-party assistance, information other than provided sources or aids have not been used and those used have been fully documented. Sources for literal, paraphrased and cited quotes have been accurately credited.%
+            \par%
+            The submitted document here present is identical to the electronically submitted text document.%
+            \par%
+        }%
+        \vspace*{2ex}%
+        \raggedright%
+        \jkureport@insertplace, \jkureport@insertdate%
+        \par%
+        \vspace*{-\baselineskip}%
+        \def\prefix##1{{##1}~\ignorespaces}%
+        \def\suffix##1{\unskip,~{##1}}%
+        \def\matno##1{}%
+        \def\and{\unskip\qquad\ignorespaces}%
+        \def\affiliation##1{}%
+        \renewcommand{\jkureport@authorcontact}[2]{}%
+        \begin{flushleft}\unskip
+        \renewcommand{\baselinestretch}{5}\mdseries%
+        \@author%
+        \end{flushleft}
+        \clearpage%
+    }{}%
+    \endgroup%
+}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Tabular tweaks
+%% 
+
+\setlength{\extrarowheight}{3pt}
+\renewcommand{\tabularxcolumn}[1]{m{#1}}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Verbatim and listings
+%% 
+
+%\def\verbatim@font{\fontsize{10pt}{11pt}\jkubeamer@verbfamily\hyphenchar\font\m@ne\@noligs}
+\def\verbatim@font{\normalfont\jkureport@verbfamily\hyphenchar\font\m@ne\@noligs}
+
+% Command \textverb{...}: Display argument in verbatim font (unlike with \verb|...|, the argument is not treated as verbatim).
+\newcommand{\textverb}[1]{{\verbatim@font #1}}
+
+\lstset{%
+    %language=[LaTeX]TeX,
+    extendedchars=true,
+    columns=fullflexible, % since we are using a fixed-width font anyways
+    keepspaces=true,      % needs to be set to maintain fixed-width property of spaces with fullflexible
+    %fontadjust=true,
+    numbers=left,
+    numberstyle=\fontsize{6pt}{6.6pt}\jkureport@verbfamily,
+    %stepnumber=1,
+    basicstyle=\fontsize{10pt}{11pt}\jkureport@verbfamily,
+    commentstyle=\crGreen\itshape,
+    keywordstyle=\crBlue\bfseries,
+    stringstyle=\crPurple,
+    tabsize=4,
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=true,
+    breaklines=true,
+    frame=tb,
+    framerule=0.5pt,
+    framexleftmargin=0.5em,
+    framexrightmargin=0.5em,
+    %xleftmargin=0.5em,
+    %xrightmargin=0.5em,
+}
+
+\let\origthelstnumber\thelstnumber
+\newcommand*\lstSuppressnumber{%
+  \lst@AddToHook{OnNewLine}{%
+    \let\thelstnumber\relax%
+    }%
+}
+
+\newcommand*\lstReactivatenumber{%
+  \lst@AddToHook{OnNewLine}{%
+   \let\thelstnumber\origthelstnumber%
+  }%
+}
+
+\newcommand*\lstReactivatenumberN[1]{%
+  \setcounter{lstnumber}{\numexpr#1-1\relax}%
+  \lst@AddToHook{OnNewLine}{%
+   \let\thelstnumber\origthelstnumber%
+  }%
+}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Boxes
+%% 
+
+\newlength{\jkureport@outerparskip}%
+
+\tcbset{%
+    notitle,
+    colframe=jkuDarkGray,
+    opacityframe=1.0,
+    colback=white,
+    opacityback=0.0,
+    title filled=true,
+    colbacktitle=jkuDarkGray,
+    opacitybacktitle=1.0,
+    coltitle=white,
+    fonttitle=\sfblackfamily,
+    boxrule=0.5mm,
+    arc=0.5mm,
+    arc is curved,
+    auto outer arc,
+    boxsep=0mm,
+    left=1em,
+    right=1em,
+    top=1em,
+    bottom=1em,
+    lefttitle=1em,
+    righttitle=1em,
+    toptitle=0.75em,
+    bottomtitle=0.75em,
+    skin=enhanced,
+}
+
+% Environment alertblock: add a boxed warning message block with an optional title
+\newenvironment{alertblock}[1][]{%
+    \setlength{\jkureport@outerparskip}{\parskip}
+	\begin{tcolorbox}[colback=jkuRed!20,opacityback=1.0,colframe=jkuRed,colbacktitle=jkuRed,title={#1}]%
+        \setlength{\parskip}{\jkureport@outerparskip}%
+}{%
+	\end{tcolorbox}%
+}
+
+\newenvironment{alertblock*}[1][]{%
+    \setlength{\jkureport@outerparskip}{\parskip}
+	\begin{tcolorbox}[colback=jkuRed!20,opacityback=1.0,colframe=jkuRed,colbacktitle=jkuRed,title={#1},
+        detach title,
+        if odd page or oneside={%
+            sharp corners=northeast,
+            underlay={
+                \node[anchor=north west,line width=0mm,inner sep=0mm] at (frame.north east) {%
+                    \begin{tcolorbox}[notitle,nobeforeafter,coltext=white,fontupper=\sfblackfamily,colframe=jkuRed,opacityframe=1.0,colback=jkuRed,opacityback=1.0,boxrule=0mm,arc=1mm,arc is curved,auto outer arc,boxsep=0mm,left=\dimexpr\marginparsep+0.5mm\relax,right=1em,top=1em,bottom=1em,width=\dimexpr\marginparwidth+\marginparsep\relax,sharp corners=west,grow to left by=0.5mm]%
+                    \vphantom{Gg}%
+                    #1%
+                    \end{tcolorbox}%
+                };
+            },
+        }{%
+            sharp corners=northwest,
+            underlay={
+                \node[anchor=north east,line width=0mm,inner sep=0mm] at (frame.north west) {%
+                    \begin{tcolorbox}[notitle,nobeforeafter,coltext=white,fontupper=\sfblackfamily,colframe=jkuRed,opacityframe=1.0,colback=jkuRed,opacityback=1.0,boxrule=0mm,arc=1mm,arc is curved,auto outer arc,boxsep=0mm,left=1em,right=\dimexpr\marginparsep+0.5mm\relax,top=1em,bottom=1em,width=\dimexpr\marginparwidth+\marginparsep\relax,sharp corners=east,grow to right by=0.5mm]%
+                    \vphantom{Gg}%
+                    #1%
+                    \end{tcolorbox}%
+                };
+            },
+        },
+    ]%
+        \setlength{\parskip}{\jkureport@outerparskip}%
+}{%
+	\end{tcolorbox}%
+}
+
+% Environment block: add a boxed message block with an optional title
+\newenvironment{block}[1][]{%
+    \setlength{\jkureport@outerparskip}{\parskip}
+	\begin{tcolorbox}[colback=jkuDarkGray!20,opacityback=1.0,title={#1}]%
+        \setlength{\parskip}{\jkureport@outerparskip}%
+}{%
+	\end{tcolorbox}%
+}
+
+\newenvironment{block*}[1][]{%
+    \setlength{\jkureport@outerparskip}{\parskip}
+	\begin{tcolorbox}[colback=jkuDarkGray!20,opacityback=1.0,title={#1},
+        detach title,
+        if odd page or oneside={%
+            sharp corners=northeast,
+            underlay={
+                \node[anchor=north west,line width=0mm,inner sep=0mm] at (frame.north east) {%
+                    \begin{tcolorbox}[notitle,nobeforeafter,coltext=white,fontupper=\sfblackfamily,colframe=jkuDarkGray,opacityframe=1.0,colback=jkuDarkGray,opacityback=1.0,boxrule=0mm,arc=1mm,arc is curved,auto outer arc,boxsep=0mm,left=\dimexpr\marginparsep+0.5mm\relax,right=1em,top=1em,bottom=1em,width=\dimexpr\marginparwidth+\marginparsep\relax,sharp corners=west,grow to left by=0.5mm]%
+                    \vphantom{Gg}%
+                    #1%
+                    \end{tcolorbox}%
+                };
+            },
+        }{%
+            sharp corners=northwest,
+            underlay={
+                \node[anchor=north east,line width=0mm,inner sep=0mm] at (frame.north west) {%
+                    \begin{tcolorbox}[notitle,nobeforeafter,coltext=white,fontupper=\sfblackfamily,colframe=jkuDarkGray,opacityframe=1.0,colback=jkuDarkGray,opacityback=1.0,boxrule=0mm,arc=1mm,arc is curved,auto outer arc,boxsep=0mm,left=1em,right=\dimexpr\marginparsep+0.5mm\relax,top=1em,bottom=1em,width=\dimexpr\marginparwidth+\marginparsep\relax,sharp corners=east,grow to right by=0.5mm]%
+                    \vphantom{Gg}%
+                    #1%
+                    \end{tcolorbox}%
+                };
+            },
+        },
+    ]%
+        \setlength{\parskip}{\jkureport@outerparskip}%
+}{%
+	\end{tcolorbox}%
+}
+
+% Environment highlightblock: add a highlighted boxed message block with an optional title
+\newenvironment{highlightblock}[1][]{%
+    \setlength{\jkureport@outerparskip}{\parskip}
+	\begin{tcolorbox}[colback=palette faculty highlight!20,opacityback=1.0,colframe=palette faculty highlight,colbacktitle=palette faculty highlight,title={#1}]%
+        \setlength{\parskip}{\jkureport@outerparskip}%
+}{%
+	\end{tcolorbox}%
+}
+
+\newenvironment{highlightblock*}[1][]{%
+    \setlength{\jkureport@outerparskip}{\parskip}
+	\begin{tcolorbox}[colback=palette faculty highlight!20,opacityback=1.0,colframe=palette faculty highlight,colbacktitle=palette faculty highlight,title={#1},
+        detach title,
+        if odd page or oneside={%
+            sharp corners=northeast,
+            underlay={
+                \node[anchor=north west,line width=0mm,inner sep=0mm] at (frame.north east) {%
+                    \begin{tcolorbox}[notitle,nobeforeafter,coltext=white,fontupper=\sfblackfamily,colframe=palette faculty highlight,opacityframe=1.0,colback=palette faculty highlight,opacityback=1.0,boxrule=0mm,arc=1mm,arc is curved,auto outer arc,boxsep=0mm,left=\dimexpr\marginparsep+0.5mm\relax,right=1em,top=1em,bottom=1em,width=\dimexpr\marginparwidth+\marginparsep\relax,sharp corners=west,grow to left by=0.5mm]%
+                    \vphantom{Gg}%
+                    #1%
+                    \end{tcolorbox}%
+                };
+            },
+        }{%
+            sharp corners=northwest,
+            underlay={
+                \node[anchor=north east,line width=0mm,inner sep=0mm] at (frame.north west) {%
+                    \begin{tcolorbox}[notitle,nobeforeafter,coltext=white,fontupper=\sfblackfamily,colframe=palette faculty highlight,opacityframe=1.0,colback=palette faculty highlight,opacityback=1.0,boxrule=0mm,arc=1mm,arc is curved,auto outer arc,boxsep=0mm,left=1em,right=\dimexpr\marginparsep+0.5mm\relax,top=1em,bottom=1em,width=\dimexpr\marginparwidth+\marginparsep\relax,sharp corners=east,grow to right by=0.5mm]%
+                    \vphantom{Gg}%
+                    #1%
+                    \end{tcolorbox}%
+                };
+            },
+        },
+    ]%
+        \setlength{\parskip}{\jkureport@outerparskip}%
+}{%
+	\end{tcolorbox}%
+}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Setup document defaults and spacing
+%% 
+
+\frenchspacing
+\tolerance2000
+\emergencystretch20pt
+
+%\AtBeginDocument{\reversemarginpar}
+
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
