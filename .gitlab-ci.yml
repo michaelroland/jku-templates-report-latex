@@ -1,0 +1,26 @@
+stages:
+  - test-build-latex
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  SOURCE_NAME: main-thesis
+
+build-pdflatex:
+  stage: test-build-latex
+  image: texlive/texlive:latest
+  script:
+  - latexmk -pdf -bibtex -gg -jobname=%A-pdflatex $SOURCE_NAME.tex
+  artifacts:
+    paths:
+    - ./$SOURCE_NAME-pdflatex.pdf
+    - ./$SOURCE_NAME-pdflatex.log
+
+build-xelatex:
+  stage: test-build-latex
+  image: texlive/texlive:latest
+  script:
+  - latexmk -pdfxe -bibtex -gg -jobname=%A-xelatex $SOURCE_NAME.tex
+  artifacts:
+    paths:
+    - ./$SOURCE_NAME-xelatex.pdf
+    - ./$SOURCE_NAME-xelatex.log
