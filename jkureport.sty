@@ -73,7 +73,7 @@
 }{\ifdefstring{\KOMAClassName}{scrbook}{%
 }{\ifdef{\KOMAClassName}{%
     \PackageWarning{jkureport}{This package expects one of the KOMA-Script classes `scrartcl', `scrreprt' or `scrbook'.}%
-}{
+}{%
     \PackageError{jkureport}{This package requires KOMA-Script classes. Please use `scrartcl', `scrreprt' or `scrbook' as your document class.}{}%
 }}}}
 
@@ -1674,6 +1674,7 @@
                 \jkureport@diplomaprogramname%
             }{\ifdefstring{\jkureport@docsubtype}{bachelor}{%
                 \jkureport@bachelorsprogramname%
+            }{%
             }}}}%
             }\par%
             \jkureport@insertdegreeprogram\par%
@@ -1792,6 +1793,7 @@
             \jkureport@diplomathesisname%
         }{\ifdefstring{\jkureport@docsubtype}{bachelor}{%
             \jkureport@bachelorsthesisname%
+        }{%
         }}}}%
     }{}%
 }
@@ -2076,7 +2078,7 @@
     \ifdefstring{\KOMAClassName}{scrbook}{}{%
         \PackageWarning{jkureport}{A thesis should use document class `scrbook' but you seem to use `\KOMAClassName'.}%
     }%
-}
+}{}%
 
 %% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
