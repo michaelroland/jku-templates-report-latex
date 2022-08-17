@@ -13,5 +13,8 @@ inputs:
 runs:
   using: docker
   image: docker://texlive/texlive:latest
+  entrypoint:
+   - /bin/bash
+   - '-c'
   args:
    - latexmk -${{ inputs.job_engine }} -bibtex -gg -jobname=%A${{ inputs.job_artifact_suffix }} ${{ inputs.job_source }}.tex
