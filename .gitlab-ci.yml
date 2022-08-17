@@ -3,24 +3,57 @@ stages:
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  SOURCE_NAME: main-thesis
+  SOURCE_NAME_THESIS: main-thesis
+  SOURCE_NAME_REPORT: main-report
 
-build-pdflatex:
-  stage: test-build-latex
+.latexmk:
   image: texlive/texlive:latest
+  variables:
+    JOB_ENGINE: pdf
+    JOB_SOURCE: main
+    JOB_ARTIFACT_SUFFIX: ""
   script:
-  - latexmk -pdf -bibtex -gg -jobname=%A-pdflatex $SOURCE_NAME.tex
+  - latexmk -$JOB_ENGINE -bibtex -gg -jobname=%A$JOB_ARTIFACT_SUFFIX $JOB_SOURCE.tex
+
+.latexmk-and-output:
+  extends: .latexmk
   artifacts:
     paths:
-    - ./$SOURCE_NAME-pdflatex.pdf
-    - ./$SOURCE_NAME-pdflatex.log
+    - ./$JOB_SOURCE$JOB_ARTIFACT_SUFFIX.pdf
+    - ./$JOB_SOURCE$JOB_ARTIFACT_SUFFIX.log
 
-build-xelatex:
+.build-pdflatex:
+  extends: .latexmk-and-output
+  variables:
+    JOB_ENGINE: pdf
+    JOB_ARTIFACT_SUFFIX: -pdflatex
+
+.build-xelatex:
+  extends: .latexmk-and-output
+  variables:
+    JOB_ENGINE: pdfxe
+    JOB_ARTIFACT_SUFFIX: -xelatex
+
+build-thesis-pdflatex:
   stage: test-build-latex
-  image: texlive/texlive:latest
-  script:
-  - latexmk -pdfxe -bibtex -gg -jobname=%A-xelatex $SOURCE_NAME.tex
-  artifacts:
-    paths:
-    - ./$SOURCE_NAME-xelatex.pdf
-    - ./$SOURCE_NAME-xelatex.log
+  extends: .build-pdflatex
+  variables:
+    JOB_SOURCE: $SOURCE_NAME_THESIS
+
+build-thesis-xelatex:
+  stage: test-build-latex
+  extends: .build-xelatex
+  variables:
+    JOB_SOURCE: $SOURCE_NAME_THESIS
+
+build-report-pdflatex:
+  stage: test-build-latex
+  extends: .build-pdflatex
+  variables:
+    JOB_SOURCE: $SOURCE_NAME_REPORT
+
+build-report-xelatex:
+  stage: test-build-latex
+  extends: .build-xelatex
+  variables:
+    JOB_SOURCE: $SOURCE_NAME_REPORT
