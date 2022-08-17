@@ -50,10 +50,10 @@ There are different ways to cite the work of others.
 These are a few examples:
 \begin{itemize}
 \item The Tor directory authority moria1 shows a voting behavior for the HSDir flag that significantly deviates from that of other directory authorities~\cite{bib:2021-hoeller-iiwas}. Be aware that the \string\cite\ command is part of the sentence and, hence, comes before the period.
-\item Roland~\cite{bib:2015-roland-thesis-book} proposes a novel attack concept against NFC secure elements in mobile phones.
-\item Roland and Langer~\cite{bib:2013-roland-woot} uncovered a flaw in legacy-support of the MasterCard contactless payment protocols that allows an attacker to clone certain credit cards.
-\item Höller et al.~\cite{bib:2021-hoeller-foci} designed an experiment to measure the usage of Tor V3 onion services in a privacy-conscious way. Here we used ``et al.'' because the cited work has more than two authors.
-\item Höller et al.~\cite{bib:2021-hoeller-iiwas} conclude:
+\item \citeauthor{bib:2015-roland-thesis-book}~\cite{bib:2015-roland-thesis-book} proposes a novel attack concept against NFC secure elements in mobile phones.
+\item \citeauthor{bib:2013-roland-woot}~\cite{bib:2013-roland-woot} uncovered a flaw in legacy-support of the MasterCard contactless payment protocols that allows an attacker to clone certain credit cards.
+\item \citeauthor{bib:2021-hoeller-foci}~\cite{bib:2021-hoeller-foci} designed an experiment to measure the usage of Tor V3 onion services in a privacy-conscious way. Here we used ``et al.'' because the cited work has more than two authors (\string\citeauthor\ will automatically take care of this).
+\item \citeauthor{bib:2021-hoeller-iiwas}~\cite{bib:2021-hoeller-iiwas} conclude:
 \begin{quote}
 \emph{Ultimately, the high fluctuations in the hidden service directory were caused by a mixture of several issues. First the changed voting behavior of three directory authorities reduced the amount of obtainable votes to six. If any of the remaining six relays went offline -- which tends to happen during ongoing DOS attacks -- relays needed to obtain five out of five available votes. So any individual measurement failure regarding either bandwidth or uptime led to a withdrawn HSDir flag.}
 \end{quote}

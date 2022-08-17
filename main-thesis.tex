@@ -27,7 +27,8 @@
 %%  JJJJJJJJJJJJJ    KKKKKKKKKKKKKKKKKKKKKKKKKKK    UUUUUUUUUUUUUUU   
 %%    JJJJJJJJJ      KKKKKKKKKKKKKKKKKKKKKKKKKKK      UUUUUUUUUUU     
 %% 
-%% This is an example file for using the JKU LaTeX technical report template.
+%% This is an example file for using the JKU LaTeX technical report template
+%% for your thesis.
 %% 
 %% Template created by Michael Roland (2021)
 %% 
@@ -35,7 +36,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
-%% Document class: This is a koma-script article.
+%% Document class: This is a koma-script book.
 %% 
 \documentclass[a4paper,oneside,10pt,ngerman,english]{scrbook}
 %% 
@@ -59,6 +60,10 @@
 %%  * english ... English
 %%  * ...
 %% 
+%% Alternate document classes: While the JKU report template supports the koma-script classes
+%% `scrartcl', `scrreprt' and `scrbook', your should always use the book class `scrbook' for
+%% your thesis.
+%%  
 %% _Important_: The document class should be the first line of LaTeX code in your main
 %% source file. Do not place anything but comments / magic comments above that line (unless
 %% you really know what you are doing).
@@ -116,7 +121,7 @@
 %%                       significantly larger than optimal for reading).
 %% 
 %% Experimental options:
-%%  * mathastext ... Use standard document fonts (and default to sans-serif font) in math mode
+%%  * mathastext ... Use standard document fonts (and default to sans-serif font) in math mode.
 %% 
 %% Advanced options:
 %%  * noautopdfinfo     ... Do not automatically try to add pdfinfo with hyperref from document
@@ -138,7 +143,7 @@
 %% 
 
 \usepackage{csquotes}
-\usepackage[backend=biber,citestyle=numeric,sortcites=true,style=ACM-Reference-Format]{biblatex}
+\usepackage[backend=biber,citestyle=numeric,sortcites=true,maxcitenames=2,style=ACM-Reference-Format]{biblatex}
 \setcounter{biburlnumpenalty}{100} %% reducing biburl* penalties typically improves URL placement in bibliography
 \setcounter{biburllcpenalty}{100}
 \setcounter{biburlucpenalty}{100}
@@ -288,3 +293,4 @@
 \cleardoubleoddpage
 
 \end{document}
+\endinput
