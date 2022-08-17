@@ -3,41 +3,58 @@ name: test-build-latex
 on: push
 
 env:
-    SOURCE_NAME: main-thesis
+    SOURCE_NAME_THESIS: main-thesis
+    SOURCE_NAME_REPORT: main-report
 
 jobs:
-  build-pdflatex:
+  build-thesis-pdflatex:
     runs-on: ubuntu-latest
-    container: texlive/texlive:latest
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
         fetch-depth: 0
-    - name: Build pdfLaTeX
-      run: |
-        latexmk -pdf -bibtex -gg -jobname=%A-pdflatex $SOURCE_NAME.tex
-    - uses: actions/upload-artifact@v2
+    - uses: ./.github/actions/latexmk-and-output
       with:
-        name: ${{ env.SOURCE_NAME }}-pdflatex
-        path: |
-          ${{ env.SOURCE_NAME }}-pdflatex.pdf
-          ${{ env.SOURCE_NAME }}-pdflatex.log
+        job_engine: pdf
+        job_source: ${{ env.SOURCE_NAME_THESIS }}
+        job_artifact_suffix: -pdflatex
   
-  build-xelatex:
+  build-thesis-xelatex:
     runs-on: ubuntu-latest
-    container: texlive/texlive:latest
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
         fetch-depth: 0
-    - name: Build XeLaTeX
-      run: |
-        latexmk -pdfxe -bibtex -gg -jobname=%A-xelatex $SOURCE_NAME.tex
-    - uses: actions/upload-artifact@v2
+    - uses: ./.github/actions/latexmk-and-output
       with:
-        name: ${{ env.SOURCE_NAME }}-xelatex
-        path: |
-          ${{ env.SOURCE_NAME }}-xelatex.pdf
-          ${{ env.SOURCE_NAME }}-xelatex.log
+        job_engine: pdfxe
+        job_source: ${{ env.SOURCE_NAME_THESIS }}
+        job_artifact_suffix: -xelatex
+  
+  build-report-pdflatex:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 0
+    - uses: ./.github/actions/latexmk-and-output
+      with:
+        job_engine: pdf
+        job_source: ${{ env.SOURCE_NAME_REPORT }}
+        job_artifact_suffix: -pdflatex
+  
+  build-report-xelatex:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 0
+    - uses: ./.github/actions/latexmk-and-output
+      with:
+        job_engine: pdfxe
+        job_source: ${{ env.SOURCE_NAME_REPORT }}
+        job_artifact_suffix: -xelatex

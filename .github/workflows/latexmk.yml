@@ -1,0 +1,18 @@
+name: 'Build with latexmk'
+description: 'Build LaTeX source with latexmk'
+inputs:
+  job_engine:
+    description: 'LaTeX engine to be used for this job'
+    default: 'pdf'
+  job_source:
+    description: 'Input file name for this build job'
+    default: 'main'
+  job_artifact_suffix:
+    description: 'Output filename suffix for this build job'
+    default: ''
+runs:
+  using: docker
+  image: docker://texlive/texlive:latest
+  entrypoint: 'sh -c'
+  args:
+   - latexmk -${{ inputs.job_engine }} -bibtex -gg -jobname=%A${{ inputs.job_artifact_suffix }} ${{ inputs.job_source }}.tex

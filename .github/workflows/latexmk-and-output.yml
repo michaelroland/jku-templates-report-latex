@@ -1,0 +1,26 @@
+name: 'Build with latexmk and upload artifacts'
+description: 'Build LaTeX source with latexmk and upload artifacts'
+inputs:
+  job_engine:
+    description: 'LaTeX engine to be used for this job'
+    default: 'pdf'
+  job_source:
+    description: 'Input file name for this build job'
+    default: 'main'
+  job_artifact_suffix:
+    description: 'Output filename suffix for this build job'
+    default: ''
+runs:
+  using: 'composite'
+  steps:
+  - uses: ./.github/actions/latexmk
+    with:
+      job_engine: ${{ inputs.job_engine }}
+      job_source: ${{ inputs.job_source }}
+      job_artifact_suffix: ${{ inputs.job_artifact_suffix }}
+  - uses: actions/upload-artifact@v2
+    with:
+      name: ${{ inputs.job_source }}${{ inputs.job_artifact_suffix }}
+      path: |
+        ${{ inputs.job_source }}${{ inputs.job_artifact_suffix }}.pdf
+        ${{ inputs.job_source }}${{ inputs.job_artifact_suffix }}.log
