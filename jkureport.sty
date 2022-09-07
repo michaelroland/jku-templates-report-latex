@@ -2199,18 +2199,17 @@
             frame=lines,
             framerule=0.5pt,
             framesep=1.5\fboxsep,
-            
         }%
         \renewcommand{\theFancyVerbLine}{%
             \fontsize{6pt}{6.6pt}\jkureport@verbfamily%
             \arabic{FancyVerbLine}%
         }%
-    }{}
+    }{}%
     \ifdef{\setminted}{%
         \setminted{%
             breaklines=true,
-        }
-    }{}
+        }%
+    }{}%
 }
 
 \let\origthelstnumber\thelstnumber
