@@ -2182,6 +2182,34 @@
     framexrightmargin=0.5em,
     %xleftmargin=0.5em,
     %xrightmargin=0.5em,
+    captionpos=b,
+    abovecaptionskip=1em,
+}
+
+% set defaults for fancyvrb and minted package, if included
+\AtEndPreamble{%
+    \ifdef{\fvset}{%
+        \fvset{%
+            fontsize=\fontsize{10pt}{11pt},
+            formatcom=\jkureport@verbfamily,
+            numbers=left,
+            tabsize=4,
+            %showtabs=false,
+            %showspaces=false,
+            frame=lines,
+            framerule=0.5pt,
+            framesep=1.5\fboxsep,
+        }%
+        \renewcommand{\theFancyVerbLine}{%
+            \fontsize{6pt}{6.6pt}\jkureport@verbfamily%
+            \arabic{FancyVerbLine}%
+        }%
+    }{}%
+    \ifdef{\setminted}{%
+        \setminted{%
+            breaklines=true,
+        }%
+    }{}%
 }
 
 \let\origthelstnumber\thelstnumber
@@ -2203,6 +2231,15 @@
    \let\thelstnumber\origthelstnumber%
   }%
 }
+
+% Use chapter.listing numbering style for listing environment (provided by minted package, if included)
+\ifdef{\chapter}{%
+    \AtBeginDocument{%
+        \ifltxcounter{listing}{%
+            \counterwithin{listing}{chapter}%
+        }{}%
+    }%
+}{}
 
 %% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
