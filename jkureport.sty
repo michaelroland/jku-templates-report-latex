@@ -2092,6 +2092,7 @@
 \newcommand{\makedeclaration}{%
     \begingroup%
     \ifdefstring{\jkureport@doctype}{thesis}{%
+        \PackageWarning{jkureport}{`\string\makedeclaration' is deprecated as of 2022. The sworn declaration (Eidesstattliche Erklärung) is now part of the submission process and should no longer be included into the thesis document.}%
         \phantomsection%
         \label{front:sworndeclaration}%
         \currentpdfbookmark{\jkureport@declarationname}{front:sworndeclaration}%
