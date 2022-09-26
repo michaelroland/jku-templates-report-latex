@@ -1765,6 +1765,15 @@
     \def\ { }%
     \edef\@temp{\endgroup\def\noexpand\jkureport@insertpdfauthor{#1}}\@temp%
 }
+\newcommand{\jkureport@preparepdfauthor@subst@one}[2]{%
+    \StrSubstitute{\jkureport@insertpdfauthor}{#1}{#2}[\jkureport@insertpdfauthor]%
+}
+\newcommand{\jkureport@preparepdfauthor@subst@all}[2]{%
+    \jkureport@preparepdfauthor@subst@one{#1}{#2}%
+    \IfSubStr{\jkureport@insertpdfauthor}{#1}{%
+        \jkureport@preparepdfauthor@subst@all{#1}{#2}%
+    }{}%
+}
 \newcommand{\jkureport@preparepdfauthor}[1]{%
     \begingroup
     \def\prefix##1{\%\%\%\%\%}%
@@ -1775,16 +1784,21 @@
     \def\authorweb[##1]{\authorweb}%
     \def\authorweb##1{\%\%\%\%\%}%
     \renewcommand{\jkureport@authorcontact}[2]{}%
-    \edef\@temp{\endgroup\def\noexpand\jkureport@insertpdfauthor{#1}}\@temp%
+    \edef\@temp{\endgroup\def\noexpand\jkureport@insertpdfauthor{\%\%\%\%\%#1\%\%\%\%\%}}\@temp%
     \saveexpandmode
     \expandarg
-    \StrSubstitute{\jkureport@insertpdfauthor}{ \%\%\%\%\% }{}[\jkureport@insertpdfauthor]%
-    \StrSubstitute{\jkureport@insertpdfauthor}{ \%\%\%\%\%}{}[\jkureport@insertpdfauthor]%
-    \StrSubstitute{\jkureport@insertpdfauthor}{\%\%\%\%\% }{}[\jkureport@insertpdfauthor]%
-    \StrSubstitute{\jkureport@insertpdfauthor}{\%\%\%\%\%}{}[\jkureport@insertpdfauthor]%
-    \StrSubstitute{\jkureport@insertpdfauthor}{,}{, }[\jkureport@insertpdfauthor]%
-    \restoreexpandmode
+    \jkureport@preparepdfauthor@subst@one{ \%\%\%\%\% }{\%\%\%\%\%}%
+    \jkureport@preparepdfauthor@subst@all{ \%\%\%\%\%}{\%\%\%\%\%}%
+    \jkureport@preparepdfauthor@subst@all{\%\%\%\%\% }{\%\%\%\%\%}%
+    \jkureport@preparepdfauthor@subst@one{\%\%\%\%\%}{}%
+    \jkureport@preparepdfauthor@subst@one{,}{, }%
+    \show\jkureport@insertpdfauthor
     \jkureport@preparepdfauthor@extra{\jkureport@insertpdfauthor}
+    \jkureport@preparepdfauthor@subst@one{ }{\%\%\%\%\%}%
+    \jkureport@preparepdfauthor@subst@all{\%\%\%\%\%\%\%\%\%\%}{\%\%\%\%\%}%
+    \jkureport@preparepdfauthor@subst@one{\%\%\%\%\%}{ }%
+    \show\jkureport@insertpdfauthor
+    \restoreexpandmode
 }
 \newcommand{\jkureport@insertsubmissiondate}{%
     \begingroup%
