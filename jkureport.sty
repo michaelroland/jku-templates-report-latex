@@ -47,6 +47,8 @@
     pdfstartview=FitH,
     pdfpagelayout=OneColumn,
     pdfborder={0 0 0},
+    unicode=true,
+    keeppdfinfo,
     ]{hyperref}
 \RequirePackage{multirow}
 \RequirePackage{array}
@@ -1806,17 +1808,13 @@
 
 \renewcommand{\title}[1]{%
     \gdef\@title{#1}%
-    \hypersetup{%
-        pdftitle={\@title},
-    }%
+    \hypersetup{pdftitle={\@title}}%
 }
 
 \renewcommand{\author}[1]{%
     \gdef\@author{#1}%
     \jkureport@preparepdfauthor{#1}%
-    \hypersetup{%
-        pdfauthor={\jkureport@insertpdfauthor},
-    }%
+    \hypersetup{pdfauthor={\jkureport@insertpdfauthor}}%
 }
 
 % Command \maketitle[FACULTY]: insert a title page, automatically wrap into a frame using the given color mode (mode defaults to global default color mode)
