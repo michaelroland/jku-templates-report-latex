@@ -2092,41 +2092,42 @@
 \newcommand{\makedeclaration}{%
     \begingroup%
     \ifdefstring{\jkureport@doctype}{thesis}{%
-        \phantomsection%
-        \label{front:sworndeclaration}%
-        \currentpdfbookmark{\jkureport@declarationname}{front:sworndeclaration}%
-        \ifdef{\chapter}{%
-            \addchap*{\jkureport@declarationname}%
-        }{%
-            \addsec*{\jkureport@declarationname}%
-        }%
-        \ifcurrentbaselanguage{german}{%
-            Ich erkläre an Eides statt, dass ich die vorliegende {\jkureport@insertthesisname} selbstständig und ohne fremde Hilfe verfasst, andere als die angegebenen Quellen und Hilfsmittel nicht benutzt bzw. die wörtlich oder sinngemäß entnommenen Stellen als solche kenntlich gemacht habe.%
-            \par%
-            Die vorliegende {\jkureport@insertthesisname} ist mit dem elektronisch übermittelten Textdokument identisch.%
-            \par%
-        }{%
-            I hereby declare under oath that the submitted {\jkureport@insertthesisname} has been written solely by me without any third-party assistance, information other than provided sources or aids have not been used and those used have been fully documented. Sources for literal, paraphrased and cited quotes have been accurately credited.%
-            \par%
-            The submitted document here present is identical to the electronically submitted text document.%
-            \par%
-        }%
-        \vspace*{2ex}%
-        \raggedright%
-        \jkureport@insertplace, \jkureport@insertdate%
-        \par%
-        \vspace*{-\baselineskip}%
-        \def\prefix##1{{##1}~\ignorespaces}%
-        \def\suffix##1{\unskip,~{##1}}%
-        \def\matno##1{}%
-        \def\and{\unskip\qquad\ignorespaces}%
-        \def\affiliation##1{}%
-        \renewcommand{\jkureport@authorcontact}[2]{}%
-        \begin{flushleft}\unskip
-        \renewcommand{\baselinestretch}{5}\mdseries%
-        \@author%
-        \end{flushleft}
-        \clearpage%
+        \PackageWarning{jkureport}{`\string\makedeclaration' is deprecated as of 2022. The sworn declaration (Eidesstattliche Erklärung) is now part of the submission process and should no longer be included into the thesis document.}%
+        %\phantomsection%
+        %\label{front:sworndeclaration}%
+        %\currentpdfbookmark{\jkureport@declarationname}{front:sworndeclaration}%
+        %\ifdef{\chapter}{%
+        %    \addchap*{\jkureport@declarationname}%
+        %}{%
+        %    \addsec*{\jkureport@declarationname}%
+        %}%
+        %\ifcurrentbaselanguage{german}{%
+        %    Ich erkläre an Eides statt, dass ich die vorliegende {\jkureport@insertthesisname} selbstständig und ohne fremde Hilfe verfasst, andere als die angegebenen Quellen und Hilfsmittel nicht benutzt bzw. die wörtlich oder sinngemäß entnommenen Stellen als solche kenntlich gemacht habe.%
+        %    \par%
+        %    Die vorliegende {\jkureport@insertthesisname} ist mit dem elektronisch übermittelten Textdokument identisch.%
+        %    \par%
+        %}{%
+        %    I hereby declare under oath that the submitted {\jkureport@insertthesisname} has been written solely by me without any third-party assistance, information other than provided sources or aids have not been used and those used have been fully documented. Sources for literal, paraphrased and cited quotes have been accurately credited.%
+        %    \par%
+        %    The submitted document here present is identical to the electronically submitted text document.%
+        %    \par%
+        %}%
+        %\vspace*{2ex}%
+        %\raggedright%
+        %\jkureport@insertplace, \jkureport@insertdate%
+        %\par%
+        %\vspace*{-\baselineskip}%
+        %\def\prefix##1{{##1}~\ignorespaces}%
+        %\def\suffix##1{\unskip,~{##1}}%
+        %\def\matno##1{}%
+        %\def\and{\unskip\qquad\ignorespaces}%
+        %\def\affiliation##1{}%
+        %\renewcommand{\jkureport@authorcontact}[2]{}%
+        %\begin{flushleft}\unskip
+        %\renewcommand{\baselinestretch}{5}\mdseries%
+        %\@author%
+        %\end{flushleft}
+        %\clearpage%
     }{}%
     \endgroup%
 }
