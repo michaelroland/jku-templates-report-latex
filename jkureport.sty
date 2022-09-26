@@ -30,6 +30,7 @@
 \RequirePackage{tikz}
 \usetikzlibrary{backgrounds}
 \usetikzlibrary{calc}
+\RequirePackage{xstring}
 \RequirePackage{babel}
 \RequirePackage{translations}
 \RequirePackage[calc,useregional]{datetime2}
@@ -47,6 +48,8 @@
     pdfstartview=FitH,
     pdfpagelayout=OneColumn,
     pdfborder={0 0 0},
+    unicode=true,
+    keeppdfinfo,
     ]{hyperref}
 \RequirePackage{multirow}
 \RequirePackage{array}
@@ -1750,17 +1753,38 @@
     }%
     \endgroup%
 }
+\newcommand{\jkureport@insertpdfauthor}{}
+\newcommand{\jkureport@preparepdfauthor@extra}[1]{%
+    \begingroup
+    \def\ignorespaces{}%
+    \def\unhbox{}%
+    \def\voidb@x{}%
+    \def\protect{}%
+    \def\penalty{}%
+    \def\@M{}%
+    \def\ { }%
+    \edef\@temp{\endgroup\def\noexpand\jkureport@insertpdfauthor{#1}}\@temp%
+}
 \newcommand{\jkureport@preparepdfauthor}[1]{%
     \begingroup
-    \def\prefix##1{\ignorespaces}%
-    \def\suffix##1{\ignorespaces}%
-    \def\matno##1{\ignorespaces}%
-    \def\and{\ignorespaces, \ignorespaces}%
-    \def\affiliation##1{\ignorespaces}%
+    \def\prefix##1{\%\%\%\%\%}%
+    \def\suffix##1{\%\%\%\%\%}%
+    \def\matno##1{\%\%\%\%\%}%
+    \def\and{,}%
+    \def\affiliation##1{\%\%\%\%\%}%
     \def\authorweb[##1]{\authorweb}%
-    \def\authorweb##1{}%
-    \renewcommand{\jkureport@authorcontact}[2]{\ignorespaces}%
+    \def\authorweb##1{\%\%\%\%\%}%
+    \renewcommand{\jkureport@authorcontact}[2]{}%
     \edef\@temp{\endgroup\def\noexpand\jkureport@insertpdfauthor{#1}}\@temp%
+    \saveexpandmode
+    \expandarg
+    \StrSubstitute{\jkureport@insertpdfauthor}{ \%\%\%\%\% }{}[\jkureport@insertpdfauthor]%
+    \StrSubstitute{\jkureport@insertpdfauthor}{ \%\%\%\%\%}{}[\jkureport@insertpdfauthor]%
+    \StrSubstitute{\jkureport@insertpdfauthor}{\%\%\%\%\% }{}[\jkureport@insertpdfauthor]%
+    \StrSubstitute{\jkureport@insertpdfauthor}{\%\%\%\%\%}{}[\jkureport@insertpdfauthor]%
+    \StrSubstitute{\jkureport@insertpdfauthor}{,}{, }[\jkureport@insertpdfauthor]%
+    \restoreexpandmode
+    \jkureport@preparepdfauthor@extra{\jkureport@insertpdfauthor}
 }
 \newcommand{\jkureport@insertsubmissiondate}{%
     \begingroup%
@@ -1806,17 +1830,13 @@
 
 \renewcommand{\title}[1]{%
     \gdef\@title{#1}%
-    \hypersetup{%
-        pdftitle={\@title},
-    }%
+    \hypersetup{pdftitle={\@title}}%
 }
 
 \renewcommand{\author}[1]{%
     \gdef\@author{#1}%
     \jkureport@preparepdfauthor{#1}%
-    \hypersetup{%
-        pdfauthor={\jkureport@insertpdfauthor},
-    }%
+    \hypersetup{pdfauthor={\jkureport@insertpdfauthor}}%
 }
 
 % Command \maketitle[FACULTY]: insert a title page, automatically wrap into a frame using the given color mode (mode defaults to global default color mode)
