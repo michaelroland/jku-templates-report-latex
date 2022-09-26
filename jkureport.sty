@@ -452,18 +452,20 @@
 %% Fancy fonts with XeTeX
 %% 
 
-\RequirePackage{lmodern}
-\RequirePackage{inconsolata}
-\RequirePackage{helvet}
-\RequirePackage{euler}
-\RequirePackage{fontawesome5}
-
 \ifxetex\else%
     \ifbool{jkureport@xetexfonts}{%
         \PackageWarning{jkureport}{True-type fonts are only supported on XeLaTeX. Please consider switching to XeLaTeX to get the full look and feel of this template. Note that you can silence this warning with the `nofancyfonts' option.}%
     }{}%
     \boolfalse{jkureport@xetexfonts}%
 \fi
+
+\ifbool{jkureport@xetexfonts}{}{%
+    \RequirePackage{lmodern}
+}%
+\RequirePackage{inconsolata}
+\RequirePackage{helvet}
+\RequirePackage{euler}
+\RequirePackage{fontawesome5}
 
 \ifbool{jkureport@xetexfonts}{%
     \expandafter\IfFileExists\expandafter{\jkureport@fontpath PublicSans-Regular.ttf}{%
@@ -474,7 +476,7 @@
         \stop
     }}
     
-    \RequirePackage[no-math]{fontspec}
+    \RequirePackage{fontspec}
     \defaultfontfeatures{
         Path={\jkureport@fontpath},
         Extension=.ttf,
@@ -2159,32 +2161,34 @@
 % Command \textverb{...}: Display argument in verbatim font (unlike with \verb|...|, the argument is not treated as verbatim).
 \newcommand{\textverb}[1]{{\verbatim@font #1}}
 
-\lstset{%
-    %language=[LaTeX]TeX,
-    extendedchars=true,
-    columns=fullflexible, % since we are using a fixed-width font anyways
-    keepspaces=true,      % needs to be set to maintain fixed-width property of spaces with fullflexible
-    %fontadjust=true,
-    numbers=left,
-    numberstyle=\fontsize{6pt}{6.6pt}\jkureport@verbfamily,
-    %stepnumber=1,
-    basicstyle=\fontsize{10pt}{11pt}\jkureport@verbfamily,
-    commentstyle=\crGreen\itshape,
-    keywordstyle=\crBlue\bfseries,
-    stringstyle=\crPurple,
-    tabsize=4,
-    showtabs=false,
-    showspaces=false,
-    showstringspaces=true,
-    breaklines=true,
-    frame=tb,
-    framerule=0.5pt,
-    framexleftmargin=0.5em,
-    framexrightmargin=0.5em,
-    %xleftmargin=0.5em,
-    %xrightmargin=0.5em,
-    captionpos=b,
-    abovecaptionskip=1em,
+\ifdef{\lstset}{%
+    \lstset{%
+        %language=[LaTeX]TeX,
+        extendedchars=true,
+        columns=fullflexible, % since we are using a fixed-width font anyways
+        keepspaces=true,      % needs to be set to maintain fixed-width property of spaces with fullflexible
+        %fontadjust=true,
+        numbers=left,
+        numberstyle=\fontsize{6pt}{6.6pt}\jkureport@verbfamily,
+        %stepnumber=1,
+        basicstyle=\fontsize{10pt}{11pt}\jkureport@verbfamily,
+        commentstyle=\crGreen\itshape,
+        keywordstyle=\crBlue\bfseries,
+        stringstyle=\crPurple,
+        tabsize=4,
+        showtabs=false,
+        showspaces=false,
+        showstringspaces=true,
+        breaklines=true,
+        frame=tb,
+        framerule=0.5pt,
+        framexleftmargin=0.5em,
+        framexrightmargin=0.5em,
+        %xleftmargin=0.5em,
+        %xrightmargin=0.5em,
+        captionpos=b,
+        abovecaptionskip=1em,
+    }
 }
 
 % set defaults for fancyvrb and minted package, if included
