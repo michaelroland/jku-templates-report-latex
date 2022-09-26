@@ -1767,17 +1767,23 @@
 }
 \newcommand{\jkureport@preparepdfauthor}[1]{%
     \begingroup
-    \def\prefix##1{}%
-    \def\suffix##1{}%
-    \def\matno##1{}%
+    \def\prefix##1{\%\%\%\%\%}%
+    \def\suffix##1{\%\%\%\%\%}%
+    \def\matno##1{\%\%\%\%\%}%
     \def\and{,}%
-    \def\affiliation##1{}%
+    \def\affiliation##1{\%\%\%\%\%}%
     \def\authorweb[##1]{\authorweb}%
-    \def\authorweb##1{}%
+    \def\authorweb##1{\%\%\%\%\%}%
     \renewcommand{\jkureport@authorcontact}[2]{}%
     \edef\@temp{\endgroup\def\noexpand\jkureport@insertpdfauthor{#1}}\@temp%
-    \StrSubstitute{\jkureport@insertpdfauthor}{ }{}[\jkureport@insertpdfauthor]%
+    \saveexpandmode
+    \expandarg
+    \StrSubstitute{\jkureport@insertpdfauthor}{ \%\%\%\%\% }{}[\jkureport@insertpdfauthor]%
+    \StrSubstitute{\jkureport@insertpdfauthor}{ \%\%\%\%\%}{}[\jkureport@insertpdfauthor]%
+    \StrSubstitute{\jkureport@insertpdfauthor}{\%\%\%\%\% }{}[\jkureport@insertpdfauthor]%
+    \StrSubstitute{\jkureport@insertpdfauthor}{\%\%\%\%\%}{}[\jkureport@insertpdfauthor]%
     \StrSubstitute{\jkureport@insertpdfauthor}{,}{, }[\jkureport@insertpdfauthor]%
+    \restoreexpandmode
     \jkureport@preparepdfauthor@extra{\jkureport@insertpdfauthor}
 }
 \newcommand{\jkureport@insertsubmissiondate}{%
