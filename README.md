@@ -1,6 +1,6 @@
-# LaTeX Technical Report Template for Johannes Kepler University Linz
+# LaTeX Thesis and Technical Report Template for JKU Linz
 
-This repository contains a template for technical reports and theses in LaTeX for [Johannes Kepler University Linz](https://www.jku.at/).
+This repository contains a template for (bachelor/master/PhD) theses and technical reports in LaTeX for [Johannes Kepler University Linz](https://www.jku.at/).
 
 
 ## RELEASES
