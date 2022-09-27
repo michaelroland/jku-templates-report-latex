@@ -1779,7 +1779,7 @@
     \def\prefix##1{\%\%\%\%\%}%
     \def\suffix##1{\%\%\%\%\%}%
     \def\matno##1{\%\%\%\%\%}%
-    \def\and{,}%
+    \def\and{\%\%\%\%\%,\%\%\%\%\%}%
     \def\affiliation##1{\%\%\%\%\%}%
     \def\authorweb[##1]{\authorweb}%
     \def\authorweb##1{\%\%\%\%\%}%
@@ -1842,13 +1842,17 @@
 
 \renewcommand{\title}[1]{%
     \gdef\@title{#1}%
-    \hypersetup{pdftitle={\@title}}%
+    \ifbool{jkureport@hyperref@automatic}{%
+        \hypersetup{pdftitle={\@title}}%
+    }{}%
 }
 
 \renewcommand{\author}[1]{%
     \gdef\@author{#1}%
     \jkureport@preparepdfauthor{#1}%
-    \hypersetup{pdfauthor={\jkureport@insertpdfauthor}}%
+    \ifbool{jkureport@hyperref@automatic}{%
+        \hypersetup{pdfauthor={\jkureport@insertpdfauthor}}%
+    }{}%
 }
 
 % Command \maketitle[FACULTY]: insert a title page, automatically wrap into a frame using the given color mode (mode defaults to global default color mode)
