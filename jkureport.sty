@@ -58,10 +58,19 @@
 \RequirePackage{rotating}
 \RequirePackage{colortbl}
 \RequirePackage{ifxetex}
-\RequirePackage{listings}
 \RequirePackage{verbatim}
 \RequirePackage{tcolorbox}
 \tcbuselibrary{skins}
+
+% Hack: conditionally load packages that may cause conflicts with others
+\AtEndPreamble{%
+    \@ifpackageloaded{minted}{}{%
+        % minted and listings can't co-exist when scrhack for listings/floats is loaded.
+        % to avoid failure, we only load the listings package if minted was not loaded
+        % by the user
+        \RequirePackage{listings}%
+    }%
+}
 
 %% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,6 +91,7 @@
 }}}}
 
 \RequirePackage{scrlayer-scrpage}
+\RequirePackage{scrlfile}
 
 %% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2198,7 +2208,8 @@
 % Command \textverb{...}: Display argument in verbatim font (unlike with \verb|...|, the argument is not treated as verbatim).
 \newcommand{\textverb}[1]{{\verbatim@font #1}}
 
-\ifdef{\lstset}{%
+% set defaults for listings package, if loaded
+\AfterPackage*{listings}{%
     \lstset{%
         %language=[LaTeX]TeX,
         extendedchars=true,
@@ -2226,53 +2237,54 @@
         captionpos=b,
         abovecaptionskip=1em,
     }
+    
+    \let\origthelstnumber\thelstnumber
+    \newcommand*{\lstSuppressnumber}{%
+        \lst@AddToHook{OnNewLine}{%
+            \let\thelstnumber\relax%
+        }%
+    }
+
+    \newcommand*{\lstReactivatenumber}{%
+        \lst@AddToHook{OnNewLine}{%
+            \let\thelstnumber\origthelstnumber%
+        }%
+    }
+
+    \newcommand*{\lstReactivatenumberN}[1]{%
+        \setcounter{lstnumber}{\numexpr#1-1\relax}%
+        \lst@AddToHook{OnNewLine}{%
+            \let\thelstnumber\origthelstnumber%
+        }%
+    }
 }
 
-% set defaults for fancyvrb and minted package, if included
-\AtEndPreamble{%
-    \ifdef{\fvset}{%
-        \fvset{%
-            fontsize=\fontsize{10pt}{11pt},
-            formatcom=\jkureport@verbfamily,
-            numbers=left,
-            tabsize=4,
-            %showtabs=false,
-            %showspaces=false,
-            frame=lines,
-            framerule=0.5pt,
-            framesep=1.5\fboxsep,
-        }%
-        \renewcommand{\theFancyVerbLine}{%
-            \fontsize{6pt}{6.6pt}\jkureport@verbfamily%
-            \arabic{FancyVerbLine}%
-        }%
-    }{}%
-    \ifdef{\setminted}{%
-        \setminted{%
-            breaklines=true,
-        }%
-    }{}%
-}
-
-\let\origthelstnumber\thelstnumber
-\newcommand*\lstSuppressnumber{%
-  \lst@AddToHook{OnNewLine}{%
-    \let\thelstnumber\relax%
+% set defaults for fancyvrb package (and in turn for the minted package), if loaded
+\AfterPackage*{fancyvrb}{%
+    \fvset{%
+        fontsize=\fontsize{10pt}{11pt},
+        formatcom=\jkureport@verbfamily,
+        numbers=left,
+        tabsize=4,
+        %showtabs=false,
+        %showspaces=false,
+        frame=lines,
+        framerule=0.5pt,
+        framesep=1.5\fboxsep,
+    }%
+    \renewcommand{\theFancyVerbLine}{%
+        \fontsize{6pt}{6.6pt}\jkureport@verbfamily%
+        \arabic{FancyVerbLine}%
     }%
 }
 
-\newcommand*\lstReactivatenumber{%
-  \lst@AddToHook{OnNewLine}{%
-   \let\thelstnumber\origthelstnumber%
-  }%
+% set defaults for minted package, if loaded
+\AfterPackage*{minted}{%
+    \setminted{%
+        breaklines=true,
+    }%
 }
 
-\newcommand*\lstReactivatenumberN[1]{%
-  \setcounter{lstnumber}{\numexpr#1-1\relax}%
-  \lst@AddToHook{OnNewLine}{%
-   \let\thelstnumber\origthelstnumber%
-  }%
-}
 
 % Use chapter.listing numbering style for listing environment (provided by minted package, if included)
 \ifdef{\chapter}{%
