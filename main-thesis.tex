@@ -246,11 +246,10 @@
 %% Print the list of figures (optional and often not necessary)
 %\listoffigures
 
-%%
-%% Print the list of acronyms
-%%
-% \import{./}{acronyms}
-%%
+%% Make sure to start the list of acronyms on a new odd page (odd is only relevant in twoside layout)
+\cleardoubleoddpage
+%% Include list of acronyms (optional and often not necessary)
+\import{./}{acronyms}
 
 %% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
