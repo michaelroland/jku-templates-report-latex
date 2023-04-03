@@ -5,6 +5,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
   SOURCE_NAME_THESIS: main-thesis
   SOURCE_NAME_REPORT: main-report
+  SOURCE_NAME_SEMINAR: main-seminarreport
 
 .latexmk:
   image: texlive/texlive:latest
@@ -57,3 +58,15 @@ build-report-xelatex:
   extends: .build-xelatex
   variables:
     JOB_SOURCE: $SOURCE_NAME_REPORT
+
+build-seminar-pdflatex:
+  stage: test-build-latex
+  extends: .build-pdflatex
+  variables:
+    JOB_SOURCE: $SOURCE_NAME_SEMINAR
+
+build-seminar-xelatex:
+  stage: test-build-latex
+  extends: .build-xelatex
+  variables:
+    JOB_SOURCE: $SOURCE_NAME_SEMINAR

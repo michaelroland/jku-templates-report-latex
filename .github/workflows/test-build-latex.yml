@@ -5,6 +5,7 @@ on: push
 env:
     SOURCE_NAME_THESIS: main-thesis
     SOURCE_NAME_REPORT: main-report
+    SOURCE_NAME_SEMINAR: main-seminarreport
 
 jobs:
   build-thesis-pdflatex:
@@ -57,4 +58,30 @@ jobs:
       with:
         job_engine: pdfxe
         job_source: ${{ env.SOURCE_NAME_REPORT }}
+        job_artifact_suffix: -xelatex
+  
+  build-seminar-pdflatex:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 0
+    - uses: ./.github/actions/latexmk-and-output
+      with:
+        job_engine: pdf
+        job_source: ${{ env.SOURCE_NAME_SEMINAR }}
+        job_artifact_suffix: -pdflatex
+  
+  build-seminar-xelatex:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 0
+    - uses: ./.github/actions/latexmk-and-output
+      with:
+        job_engine: pdfxe
+        job_source: ${{ env.SOURCE_NAME_SEMINAR }}
         job_artifact_suffix: -xelatex
