@@ -28,7 +28,7 @@
 %%    JJJJJJJJJ      KKKKKKKKKKKKKKKKKKKKKKKKKKK      UUUUUUUUUUU     
 %% 
 %% This is an example file for using the JKU LaTeX technical report template
-%% for your thesis.
+%% for your seminar report.
 %% 
 %% Template created by Michael Roland (2023)
 %% 
@@ -36,7 +36,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
-%% Document class: This is a koma-script book.
+%% Document class: This is a koma-script article.
 %% 
 \documentclass[a4paper,oneside,10pt,ngerman,english]{scrartcl}
 %% 
@@ -60,9 +60,10 @@
 %%  * english ... English
 %%  * ...
 %% 
-%% Alternate document classes: While the JKU report template supports the koma-script classes
-%% `scrartcl', `scrreprt' and `scrbook', your should always use the book class `scrbook' for
-%% your thesis.
+%% Alternate document classes: The JKU report template supports the koma-script classes
+%% `scrartcl', `scrreprt' and `scrbook'. The article class `scrartcl' is well-suited
+%% for a typical seminar report. However, `scrbook' or `scrreprt' may be better
+%% suited for longer reports since they permit structuring your work in chapters.
 %%  
 %% _Important_: The document class should be the first line of LaTeX code in your main
 %% source file. Do not place anything but comments / magic comments above that line (unless
@@ -196,6 +197,9 @@
 % Command \date{YYYY-MM-DD}: set the day of submission (defaults to today)
 %\date{2020-04-09}
 
+% Command \abstract{text}: set the document abstract on the title page
+\abstract{Space for your (short) abstract.}
+
 % Command \keywords{text}: set the document keywords
 %\keywords{Space for your comma-separated keywords}
 
@@ -325,6 +329,7 @@ Space for your summary, central conclusions, and an outlook on potential future 
 %% 
 %% Print the bibliography
 %% 
+%% (Optionally) let the bibliography start on a new odd page (odd is only relevant in twoside layout)
 %\cleardoubleoddpage
 \printbibliography
 %% 
