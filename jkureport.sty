@@ -2,7 +2,7 @@
 %% 
 %% LaTeX Style for Various Reports and Theses at Johannes Kepler University Linz
 %% 
-%% Copyright (C) 2021-2022  Michael Roland
+%% Copyright (C) 2021-2023  Michael Roland
 %% 
 %% This Source Code Form is subject to the terms of the Mozilla Public
 %% License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -272,7 +272,7 @@
     },
     seminarreport/.value forbidden,
     seminarreport/.code={%
-        \renewcommand{\jkureport@doctype}{report}%
+        \renewcommand{\jkureport@doctype}{thesis}%
         \renewcommand{\jkureport@docsubtype}{seminar}%
     },
     techreport/.value forbidden,
@@ -1679,24 +1679,25 @@
     \ifdefstring{\jkureport@doctype}{thesis}{%
         \setlength{\parskip}{\jkureport@subtitleparskip}%
         \jkureport@insertthesisname\par%
-        \ifdefempty{\jkureport@insertdegreetype}{}{%
-            {\usekomafont{subtitlesmall}\jkureport@conferdegreename}\par%
-            \jkureport@insertdegreetype\par%
-        }%
-        \ifdefempty{\jkureport@insertdegreeprogram}{}{%
-            {\usekomafont{subtitlesmall}%
-            \ifdefstring{\jkureport@docsubtype}{phd}{%
-                \jkureport@phdprogramname%
-            }{\ifdefstring{\jkureport@docsubtype}{master}{%
-                \jkureport@mastersprogramname%
-            }{\ifdefstring{\jkureport@docsubtype}{diploma}{%
-                \jkureport@diplomaprogramname%
-            }{\ifdefstring{\jkureport@docsubtype}{bachelor}{%
-                \jkureport@bachelorsprogramname%
-            }{%
-            }}}}%
-            }\par%
-            \jkureport@insertdegreeprogram\par%
+        \ifdefstring{\jkureport@docsubtype}{seminar}{}{%
+            \ifdefempty{\jkureport@insertdegreetype}{}{%
+                {\usekomafont{subtitlesmall}\jkureport@conferdegreename}\par%
+                \jkureport@insertdegreetype\par%
+            }%
+            \ifdefempty{\jkureport@insertdegreeprogram}{}{%
+                {\usekomafont{subtitlesmall}%
+                \ifdefstring{\jkureport@docsubtype}{phd}{%
+                    \jkureport@phdprogramname%
+                }{\ifdefstring{\jkureport@docsubtype}{master}{%
+                    \jkureport@mastersprogramname%
+                }{\ifdefstring{\jkureport@docsubtype}{diploma}{%
+                    \jkureport@diplomaprogramname%
+                }{\ifdefstring{\jkureport@docsubtype}{bachelor}{%
+                    \jkureport@bachelorsprogramname%
+                }{%
+                }}}}%
+                }\par%
+            }%
         }%
     }{%
         \protect\@subtitle%
@@ -1820,7 +1821,11 @@
 }
 \newcommand{\jkureport@insertdate}{%
     \ifdefstring{\jkureport@doctype}{thesis}{%
-        \jkureport@insertsubmissiondate%
+        \ifdefstring{\jkureport@docsubtype}{seminar}{%
+            \protect\@date%
+        }{%
+            \jkureport@insertsubmissiondate%
+        }%
     }{%
         \protect\@date%
     }%
@@ -1845,8 +1850,10 @@
             \jkureport@diplomathesisname%
         }{\ifdefstring{\jkureport@docsubtype}{bachelor}{%
             \jkureport@bachelorsthesisname%
+        }{\ifdefstring{\jkureport@docsubtype}{seminar}{%
+            \protect\@subtitle%
         }{%
-        }}}}%
+        }}}}}%
     }{}%
 }
 \newcommand{\jkureport@insertdegreetype}{}
