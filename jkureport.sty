@@ -189,17 +189,22 @@
     noimprint/.code={\boolfalse{jkureport@imprint}},
 }
 
-% Option [no]titlelogo: show logo on title page (defaults to true)
-\newbool{jkureport@titlelogo}
+% Option [no]jkulogo: show JKU and K logos on title page (defaults to true)
+% DEPRECATED Option [no]titlelogo: show JKU logo on title page (defaults to true)
+\newbool{jkureport@jkulogo}
 \pgfkeys{%
     /jkureport/pkg/.cd,
-    titlelogo/.is choice,
-    titlelogo/.default=true,
-    titlelogo/true/.code={\booltrue{jkureport@titlelogo}},
-    titlelogo/false/.code={\boolfalse{jkureport@titlelogo}},
-    titlelogo=true,
-    notitlelogo/.value forbidden,
-    notitlelogo/.code={\boolfalse{jkureport@titlelogo}},
+    jkulogo/.is choice,
+    jkulogo/.default=true,
+    jkulogo/true/.code={\booltrue{jkureport@jkulogo}},
+    jkulogo/false/.code={\boolfalse{jkureport@jkulogo}},
+    jkulogo=true,
+    nojkulogo/.value forbidden,
+    nojkulogo/.code={\boolfalse{jkureport@jkulogo}},
+    titlelogo/.code={\PackageWarning{jkureport}{Option `titlelogo' deprecated, use option `jkulogo' instead!}},
+    titlelogo/.forward to=/jkureport/pkg/jkulogo,
+    notitlelogo/.code={\PackageWarning{jkureport}{Option `notitlelogo' deprecated, use option `nojkulogo' instead!}},
+    notitlelogo/.forward to=/jkureport/pkg/nojkulogo,
 }
 
 % Option [no]capstitle: set title in all-caps (defaults to false)
@@ -1531,11 +1536,13 @@
     };
     \node[anchor=south west,line width=0mm, inner sep=0mm] at ($(current page.south west) + (\jkureport@oddsidemargin + \jkureport@titlepage@marginleft, \jkureport@Klogo@titlepage@offset)$) {
         \color{jkureport@fg}%
-        \jkureport@Klogo%
+        \ifbool{jkureport@jkulogo}{%
+            \jkureport@Klogo%
+        }{}%
     };
     \node[anchor=north west,line width=0mm, inner sep=0mm] at ($(current page.north east) - (\jkureport@titlepage@marginpar + \jkureport@logo@titlepage@hoffset, \jkureport@logo@titlepage@offset)$) {%
         \color{jkureport@fg}%
-        \ifbool{jkureport@titlelogo}{%
+        \ifbool{jkureport@jkulogo}{%
             \resizebox{!}{\jkureport@logo@titlepage@height}{\jkureport@logo}%
         }{}%
     };
