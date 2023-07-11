@@ -1,72 +1,15 @@
-stages:
-  - test-build-latex
+include: 
+  - 'https://git.ins.jku.at/configurations/ci/-/raw/main/latex/build_pdf.yml'
 
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
-  SOURCE_NAME_THESIS: main-thesis
-  SOURCE_NAME_REPORT: main-report
-  SOURCE_NAME_SEMINAR: main-seminarreport
+.latex-build-matrix:
+  parallel:
+    matrix:
+      - LATEX_BUILDPDF_SOURCE_NAME: [main-thesis, main-report, main-seminarreport]
+        LATEX_BUILDPDF_TEX_COMMAND: [pdflatex, xelatex]
 
-.latexmk:
-  image: texlive/texlive:latest
+latex_build_pdf:
+  extends:
+    - .latex-build-matrix
   variables:
-    JOB_ENGINE: pdf
-    JOB_SOURCE: main
-    JOB_ARTIFACT_SUFFIX: ""
-  script:
-  - latexmk -$JOB_ENGINE -bibtex -gg -jobname=%A$JOB_ARTIFACT_SUFFIX $JOB_SOURCE.tex
-
-.latexmk-and-output:
-  extends: .latexmk
-  artifacts:
-    paths:
-    - ./$JOB_SOURCE$JOB_ARTIFACT_SUFFIX.pdf
-    - ./$JOB_SOURCE$JOB_ARTIFACT_SUFFIX.log
-
-.build-pdflatex:
-  extends: .latexmk-and-output
-  variables:
-    JOB_ENGINE: pdf
-    JOB_ARTIFACT_SUFFIX: -pdflatex
-
-.build-xelatex:
-  extends: .latexmk-and-output
-  variables:
-    JOB_ENGINE: pdfxe
-    JOB_ARTIFACT_SUFFIX: -xelatex
-
-build-thesis-pdflatex:
-  stage: test-build-latex
-  extends: .build-pdflatex
-  variables:
-    JOB_SOURCE: $SOURCE_NAME_THESIS
-
-build-thesis-xelatex:
-  stage: test-build-latex
-  extends: .build-xelatex
-  variables:
-    JOB_SOURCE: $SOURCE_NAME_THESIS
-
-build-report-pdflatex:
-  stage: test-build-latex
-  extends: .build-pdflatex
-  variables:
-    JOB_SOURCE: $SOURCE_NAME_REPORT
-
-build-report-xelatex:
-  stage: test-build-latex
-  extends: .build-xelatex
-  variables:
-    JOB_SOURCE: $SOURCE_NAME_REPORT
-
-build-seminar-pdflatex:
-  stage: test-build-latex
-  extends: .build-pdflatex
-  variables:
-    JOB_SOURCE: $SOURCE_NAME_SEMINAR
-
-build-seminar-xelatex:
-  stage: test-build-latex
-  extends: .build-xelatex
-  variables:
-    JOB_SOURCE: $SOURCE_NAME_SEMINAR
+    LATEX_BUILDPDF_TEXLIVE_IMAGE: texlive/texlive
+    LATEX_BUILDPDF_TEXLIVE_VERSION: latest
