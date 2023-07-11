@@ -485,6 +485,10 @@
 \RequirePackage{helvet}
 \RequirePackage{euler}
 \RequirePackage{fontawesome5}
+\ifxetex\else%
+    % fix potentially mis-packaged FA5 in TeX Live 2017, see https://tex.stackexchange.com/q/497792/290236
+    \pdfmapfile{=fontawesome5.map}%
+\fi
 
 \ifbool{jkureport@xetexfonts}{%
     \expandafter\IfFileExists\expandafter{\jkureport@fontpath PublicSans-Regular.ttf}{%
