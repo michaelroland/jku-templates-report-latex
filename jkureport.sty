@@ -1300,6 +1300,9 @@
 \defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\acronymname}{List of Acronyms}
 \defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\acronymname}{Abkürzungsverzeichnis}
 
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\acksname}{Acknowledgements}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\acksname}{Danksagung}
+
 % Autoref labels
 \defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\subsectionautorefname}{\sectionautorefname}
 \defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\subsectionautorefname}{\sectionautorefname}
@@ -1977,6 +1980,23 @@
 
 % Command \setbottommark{text}: set the bottom mark (in document footer)
 \newcommand{\setbottommark}[1]{\renewcommand{\jkureport@insertbottommark}{{#1}}}
+
+% Environment acks: set the document acknowledgements on a dedicated page
+% Environment acks*: set the document acknowledgements on a dedicated page without enforcing a page break
+\newenvironment{acks*}{%
+    \ifdef{\chapter}{%
+        \addchap{\acksname}%
+    }{%
+        \addsec{\acksname}%
+    }%
+}{%
+}
+\newenvironment{acks}{%
+    \csuse{acks*}
+}{%
+    \csuse{acks*}%
+    \clearpage%
+}
 
 
 % Author metadata
