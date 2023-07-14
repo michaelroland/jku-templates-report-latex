@@ -109,7 +109,7 @@
     logopath/.code={%
         \renewcommand{\jkureport@logopath}{#1}%
     },
-    logopath=./logos,
+    logopath=logos,
 }
 
 % Option fontpath={}: set path to template font resources (defaults to "./fonts")
@@ -120,7 +120,7 @@
     fontpath/.code={%
         \renewcommand{\jkureport@fontpath}{#1}%
     },
-    fontpath=./fonts,
+    fontpath=fonts,
 }
 
 % Option [no]fancyfonts: use custom TTF fonts with XeTeX (defaults to true)
@@ -493,7 +493,7 @@
     \expandafter\IfFileExists\expandafter{\jkureport@fontpath PublicSans-Regular.ttf}{%
     }{\expandafter\IfFileExists\expandafter{\jkureport@fontpath/PublicSans-Regular.ttf}{%
         \xdef\jkureport@fontpath{\jkureport@fontpath/}
-    }{%
+        }{%
         \PackageError{jkureport}{Font files not found in `\jkureport@fontpath', forgot to set the font path with package option `fontpath='?}{}%
         \stop
     }}
