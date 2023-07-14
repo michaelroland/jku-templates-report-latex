@@ -109,7 +109,7 @@
     logopath/.code={%
         \renewcommand{\jkureport@logopath}{#1}%
     },
-    logopath=./logos,
+    logopath=logos,
 }
 
 % Option fontpath={}: set path to template font resources (defaults to "./fonts")
@@ -120,7 +120,7 @@
     fontpath/.code={%
         \renewcommand{\jkureport@fontpath}{#1}%
     },
-    fontpath=./fonts,
+    fontpath=fonts,
 }
 
 % Option [no]fancyfonts: use custom TTF fonts with XeTeX (defaults to true)
@@ -490,15 +490,30 @@
 \fi
 
 \ifbool{jkureport@xetexfonts}{%
+    \RequirePackage{fontspec}
+    % discover font path
     \expandafter\IfFileExists\expandafter{\jkureport@fontpath PublicSans-Regular.ttf}{%
+        \IfFontExistsTF{\jkureport@fontpath PublicSans-Regular.ttf}{%
+        }{%
+            \xdef\jkureport@fontpath{}
+        }%
     }{\expandafter\IfFileExists\expandafter{\jkureport@fontpath/PublicSans-Regular.ttf}{%
         \xdef\jkureport@fontpath{\jkureport@fontpath/}
+        \IfFontExistsTF{\jkureport@fontpath PublicSans-Regular.ttf}{%
+        }{%
+            \xdef\jkureport@fontpath{}
+        }%
+    }{\IfFontExistsTF{PublicSans-Regular.ttf}{%
+        \xdef\jkureport@fontpath{}
     }{%
         \PackageError{jkureport}{Font files not found in `\jkureport@fontpath', forgot to set the font path with package option `fontpath='?}{}%
         \stop
-    }}
-    
-    \RequirePackage{fontspec}
+    }}}%
+    \IfFontExistsTF{\jkureport@fontpath PublicSans-Regular.ttf}{%
+    }{%
+        \PackageError{jkureport}{Font files not found in local installation. Fonts must be installed to `$TEXMF[HOME|LOCAL]/fonts/truetype/' or an alternative font path set with package option `fontpath='}{}%
+        \stop
+    }%
     \defaultfontfeatures{
         Path={\jkureport@fontpath},
         Extension=.ttf,
