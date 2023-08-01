@@ -11,10 +11,9 @@ jobs:
   build-thesis-pdflatex:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
-        fetch-depth: 0
     - uses: ./.github/actions/latexmk-and-output
       with:
         job_engine: pdf
@@ -24,10 +23,9 @@ jobs:
   build-thesis-xelatex:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
-        fetch-depth: 0
     - uses: ./.github/actions/latexmk-and-output
       with:
         job_engine: pdfxe
@@ -37,10 +35,9 @@ jobs:
   build-report-pdflatex:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
-        fetch-depth: 0
     - uses: ./.github/actions/latexmk-and-output
       with:
         job_engine: pdf
@@ -50,10 +47,9 @@ jobs:
   build-report-xelatex:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
-        fetch-depth: 0
     - uses: ./.github/actions/latexmk-and-output
       with:
         job_engine: pdfxe
@@ -63,10 +59,9 @@ jobs:
   build-seminar-pdflatex:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
-        fetch-depth: 0
     - uses: ./.github/actions/latexmk-and-output
       with:
         job_engine: pdf
@@ -76,10 +71,9 @@ jobs:
   build-seminar-xelatex:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
-        fetch-depth: 0
     - uses: ./.github/actions/latexmk-and-output
       with:
         job_engine: pdfxe
