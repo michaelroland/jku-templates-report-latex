@@ -36,20 +36,27 @@
 \RequirePackage{amsmath}
 \RequirePackage{url}
 \RequirePackage{enumitem}
-\RequirePackage{hyperxmp}
 \RequirePackage[
     bookmarks=true,
-    bookmarksnumbered=false,
-    bookmarksopen=true,
+    %bookmarksnumbered=false,
+    %bookmarksopen=true,
     linkcolor={jkuPurple},
     urlcolor={jkuBlue},
     colorlinks=false,
+    unicode=true,
+    pdfa,
+    ]{hyperref}
+\RequirePackage{hyperxmp}
+\RequirePackage[
+    numbered=false,
+    open=true,
+    ]{bookmark}
+\hypersetup{
     pdfstartview=FitH,
     pdfpagelayout=OneColumn,
     pdfborder={0 0 0},
-    unicode=true,
     keeppdfinfo,
-    ]{hyperref}
+}
 \RequirePackage{multirow}
 \RequirePackage{array}
 \RequirePackage{tabularx}
