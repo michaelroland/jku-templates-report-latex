@@ -491,7 +491,9 @@
 }%
 \RequirePackage{inconsolata}
 \RequirePackage{helvet}
-\RequirePackage{euler}
+\ifxetex\else%
+    \RequirePackage{euler}
+\fi
 \RequirePackage{fontawesome5}
 \ifxetex\else%
     % fix potentially mis-packaged FA5 in TeX Live 2017, see https://tex.stackexchange.com/q/497792/290236
@@ -499,7 +501,12 @@
 \fi
 
 \ifbool{jkureport@xetexfonts}{%
-    \RequirePackage{fontspec}
+    \@ifpackageloaded{unicode-math}{%
+        \setmathfont{Euler-Math.otf}
+    }{%
+        \RequirePackage{euler-math}%
+    }%
+    %\RequirePackage{fontspec}
     % discover font path
     \expandafter\IfFileExists\expandafter{\jkureport@fontpath PublicSans-Regular.ttf}{%
         \IfFontExistsTF{\jkureport@fontpath PublicSans-Regular.ttf}{%
