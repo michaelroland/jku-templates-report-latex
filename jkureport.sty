@@ -171,7 +171,7 @@
     nocompactmono/.code={\boolfalse{jkureport@compactmono}},
 }
 
-% Option [no]mathastext: use standard document fonts (and default to sans-serif font) in math mode (defaults to false)
+% Option [no]mathastext: use standard document fonts in math mode (defaults to false)
 \newbool{jkureport@mathastext}
 \pgfkeys{%
     /jkureport/pkg/.cd,
@@ -491,7 +491,9 @@
 }%
 \RequirePackage{inconsolata}
 \RequirePackage{helvet}
-\RequirePackage{euler}
+\ifxetex\else%
+    \RequirePackage{euler}
+\fi
 \RequirePackage{fontawesome5}
 \ifxetex\else%
     % fix potentially mis-packaged FA5 in TeX Live 2017, see https://tex.stackexchange.com/q/497792/290236
@@ -499,7 +501,16 @@
 \fi
 
 \ifbool{jkureport@xetexfonts}{%
-    \RequirePackage{fontspec}
+    \ifbool{jkureport@mathastext}{
+        \RequirePackage[usefilenames]{firamath-otf}%
+    }{%
+        \@ifpackageloaded{unicode-math}{%
+            \setmathfont{Euler-Math.otf}
+        }{%
+            \RequirePackage{euler-math}%
+        }%
+    }
+    %\RequirePackage{fontspec}
     % discover font path
     \expandafter\IfFileExists\expandafter{\jkureport@fontpath PublicSans-Regular.ttf}{%
         \IfFontExistsTF{\jkureport@fontpath PublicSans-Regular.ttf}{%
@@ -682,7 +693,7 @@
 %% 
 
 \ifbool{jkureport@mathastext}{%
-    \usepackage[italic,defaultmathsizes,eulergreek]{mathastext}
+    \usepackage[italic,defaultmathsizes,eulergreek,nosmalldelims]{mathastext}%
 }{}
 
 %% 
@@ -2271,7 +2282,7 @@
 %% Verbatim and listings
 %% 
 
-%\def\verbatim@font{\fontsize{10pt}{11pt}\jkubeamer@verbfamily\hyphenchar\font\m@ne\@noligs}
+%\def\verbatim@font{\fontsize{10pt}{11pt}\jkureport@verbfamily\hyphenchar\font\m@ne\@noligs}
 \def\verbatim@font{\normalfont\jkureport@verbfamily\hyphenchar\font\m@ne\@noligs}
 
 % Command \textverb{...}: Display argument in verbatim font (unlike with \verb|...|, the argument is not treated as verbatim).
