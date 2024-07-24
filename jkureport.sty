@@ -501,11 +501,15 @@
 \fi
 
 \ifbool{jkureport@xetexfonts}{%
-    \@ifpackageloaded{unicode-math}{%
-        \setmathfont{Euler-Math.otf}
+    \ifbool{jkureport@mathastext}{
+        \RequirePackage[usefilenames]{firamath-otf}%
     }{%
-        \RequirePackage{euler-math}%
-    }%
+        \@ifpackageloaded{unicode-math}{%
+            \setmathfont{Euler-Math.otf}
+        }{%
+            \RequirePackage{euler-math}%
+        }%
+    }
     %\RequirePackage{fontspec}
     % discover font path
     \expandafter\IfFileExists\expandafter{\jkureport@fontpath PublicSans-Regular.ttf}{%
@@ -689,7 +693,6 @@
 %% 
 
 \ifbool{jkureport@mathastext}{%
-    \RequirePackage[usefilenames]{firamath-otf}%
     \usepackage[italic,defaultmathsizes,eulergreek,nosmalldelims]{mathastext}%
 }{}
 
