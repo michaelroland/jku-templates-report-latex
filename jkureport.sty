@@ -2,7 +2,7 @@
 %% 
 %% LaTeX Style for Various Reports and Theses at Johannes Kepler University Linz
 %% 
-%% Copyright (C) 2021-2023  Michael Roland
+%% Copyright (C) 2021-2024  Michael Roland
 %% 
 %% This Source Code Form is subject to the terms of the Mozilla Public
 %% License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -237,6 +237,8 @@
     equalmargins/true/.code={\setlength{\jkureport@textwidthadd}{0mm}},
     equalmargins/false/.code={\setlength{\jkureport@textwidthadd}{-15mm}},
     equalmargins=false,
+    noequalmargins/.value forbidden,
+    noequalmargins/.code={\setlength{\jkuexercise@textwidthadd}{-15mm}},
 }
 
 % Option phdthesis: this is a PhD thesis
