@@ -695,7 +695,19 @@
 %% 
 
 \ifbool{jkureport@mathastext}{%
-    \usepackage[italic,defaultmathsizes,eulergreek,nosmalldelims]{mathastext}%
+    \ifxetex%
+        % As of version 1.4, mathastext no longer compiles with XeLaTeX unless we
+        % the (deprecated) everymath option or the nominus option. Bug has been
+        % acknowledged by mathastext author. Until then, we are safe to use everymath:
+        \PassOptionsToPackage{everymath}{mathastext}
+        % In the future, we may also want to consider to use nominus (and use the
+        % standard math font for it). In that case, we should do this for at least
+        % the three basic operators +/-/= to achieve consistent operator alignment.
+        % Actually, this looks very promising in combination with FiraMath and we
+        % might want to consider always doing that in future (not just for XeLaTeX):
+        %\PassOptionsToPackage{noplus,nominus,noequal}{mathastext}
+    \fi
+    \usepackage[italic,defaultmathsizes,eulergreek,nosmalldelims,unicodeminus]{mathastext}
 }{}
 
 %% 
