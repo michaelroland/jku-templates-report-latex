@@ -65,7 +65,14 @@
 \RequirePackage{booktabs}
 \RequirePackage{rotating}
 \RequirePackage{colortbl}
-\RequirePackage{ifxetex}
+\RequirePackage{iftex}
+% legacy packages prior to merge into iftex; still relevant?
+\@ifundefined{ifluatex}{%
+    \RequirePackage{ifluatex}
+}{}
+\@ifundefined{ifxetex}{%
+    \RequirePackage{ifxetex}
+}{}
 \RequirePackage{verbatim}
 \RequirePackage{tcolorbox}
 \tcbuselibrary{skins}
@@ -132,7 +139,7 @@
     fontpath=fonts,
 }
 
-% Option [no]fancyfonts: use custom TTF fonts with XeTeX (defaults to true)
+% Option [no]fancyfonts: use custom TTF fonts with XeTeX/LuaTeX (defaults to true)
 \newbool{jkureport@xetexfonts}
 \pgfkeys{%
     /jkureport/pkg/.cd,
@@ -478,29 +485,29 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
-%% Fancy fonts with XeTeX
+%% Fancy fonts with LuaTeX/XeTeX
 %% 
-
-\ifxetex\else%
-    \ifbool{jkureport@xetexfonts}{%
-        \PackageWarning{jkureport}{True-type fonts are only supported on XeLaTeX. Please consider switching to XeLaTeX to get the full look and feel of this template. Note that you can silence this warning with the `nofancyfonts' option.}%
-    }{}%
-    \boolfalse{jkureport@xetexfonts}%
-\fi
 
 \ifbool{jkureport@xetexfonts}{}{%
     \RequirePackage{lmodern}
 }%
 \RequirePackage{inconsolata}
 \RequirePackage{helvet}
-\ifxetex\else%
+\ifluatex\else\ifxetex\else%
     \RequirePackage{euler}
-\fi
+\fi\fi
 \RequirePackage{fontawesome5}
-\ifxetex\else%
+\ifluatex\else\ifxetex\else%
     % fix potentially mis-packaged FA5 in TeX Live 2017, see https://tex.stackexchange.com/q/497792/290236
     \pdfmapfile{=fontawesome5.map}%
-\fi
+\fi\fi
+
+\ifluatex\else\ifxetex\else%
+    \ifbool{jkureport@xetexfonts}{%
+        \PackageWarning{jkureport}{True-type fonts are only supported on LuaLaTeX/XeLaTeX. Please consider switching to LuaLaTeX (or XeLaTex) to get the full look and feel of this template. Note that you can silence this warning with the `nofancyfonts' option.}%
+    }{}%
+    \boolfalse{jkureport@xetexfonts}%
+\fi\fi
 
 \ifbool{jkureport@xetexfonts}{%
     \ifbool{jkureport@mathastext}{
