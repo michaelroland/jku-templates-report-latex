@@ -5,7 +5,7 @@ include:
   parallel:
     matrix:
       - LATEX_BUILDPDF_SOURCE_NAME: [main-thesis, main-report, main-seminarreport]
-        LATEX_BUILDPDF_TEX_COMMAND: [pdflatex, xelatex]
+        LATEX_BUILDPDF_TEX_COMMAND: [pdflatex, xelatex, lualatex]
 
 latex_build_pdf:
   extends:
