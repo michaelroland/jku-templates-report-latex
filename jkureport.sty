@@ -444,8 +444,19 @@
 \setlength{\jkureport@authoring@titlepage@offset}{60mm}
 
 % General page sizing
-\setlength{\pdfpagewidth}{\paperwidth}
-\setlength{\pdfpageheight}{\paperheight}
+
+\@ifundefined{pdfpagewidth}{}{%
+    \setlength{\pdfpagewidth}{\paperwidth}
+}
+\@ifundefined{pagewidth}{}{%
+    \setlength{\pagewidth}{\paperwidth}
+}
+\@ifundefined{pdfpageheight}{}{%
+    \setlength{\pdfpageheight}{\paperwidth}
+}
+\@ifundefined{pageheight}{}{%
+    \setlength{\pageheight}{\paperwidth}
+}
 \setlength{\hoffset}{0in}
 \setlength{\voffset}{0in}
 
