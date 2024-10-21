@@ -9,7 +9,8 @@
 %% 
 %% You can safely use "pdflatex" instead of "xelatex" if you prefer the pdfLaTeX toolchain.
 %% However, pdfLaTeX will not be able to deliver the professional font experience that you
-%% will get with XeLaTeX.
+%% will get with XeLaTeX. You can also safely use "lualatex" instead of "xelatex" while
+%% preserving the professional font experience if you prefer the LuaLaTeX toolchain.
 %% 
 %% _Important_: These magic comments should be on the first lines of your source file.
 %% 
@@ -74,7 +75,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
 %% Treat input files as UTF-8 encoded. Make sure to always load this when you use pdfLaTeX
-%% so that pdfLaTeX knows how to read and interpret characters this source file.
+%% so that pdfLaTeX knows how to read and interpret characters in this source file.
 %% 
 \usepackage[utf8]{inputenc}
 %% 
@@ -107,7 +108,7 @@
 %%  * SOWI ... Use SOWI faculty color scheme.
 %%  * TNF  ... Use TNF faculty color scheme.
 %% 
-%% Space-efficient monospace font options (requires XeTeX):
+%% Space-efficient monospace font options (requires XeTeX/LuaTeX):
 %%  * compactmono   ... Use condensed fixed-width font everywhere.
 %%  * nocompactverb ... Do not use condensed fixed-width font for verbatim and listings.
 %% 
@@ -115,15 +116,15 @@
 %%  * noimprint      ... Do not insert imprint on title pages.
 %%  * nojkulogo      ... Do not insert JKU & K logos on title pages.
 %%  * capstitle      ... Set document title in capital letters.
-%%  * nofancyfonts   ... Do not use custom TTF fonts with XeTeX / supress pdfLaTeX warning.
+%%  * nofancyfonts   ... Do not use custom TTF fonts with XeTeX/LuaTeX / supress pdfLaTeX warning.
 %%  * equalmargins   ... Decrease the outer page margin to have both page margins of equal size
 %%                       (the additional outer margin is intentional and to be used for
 %%                       anotations; equalmargins also causes the text width to be
 %%                       significantly larger than optimal for reading).
 %% 
 %% Experimental options:
-%%  * mathastext ... Use standard document fonts (enhanced with symbols from Fira Math font)
-%%                   in math mode.
+%%  * mathastext ... Use standard document fonts (enhanced with symbols from Fira Math font
+%%                   when using XeTeX/LuaTeX) in math mode.
 %% 
 %% Advanced options:
 %%  * noautopdfinfo     ... Do not automatically try to add pdfinfo with hyperref from document
@@ -356,6 +357,7 @@ Appendices are, of course, optional.
 
 %% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \cleardoubleoddpage
 
 \end{document}

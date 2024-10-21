@@ -32,6 +32,18 @@ jobs:
         job_source: ${{ env.SOURCE_NAME_THESIS }}
         job_artifact_suffix: -xelatex
   
+  build-thesis-lualatex:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - uses: ./.github/actions/latexmk-and-output
+      with:
+        job_engine: pdflua
+        job_source: ${{ env.SOURCE_NAME_THESIS }}
+        job_artifact_suffix: -lualatex
+  
   build-report-pdflatex:
     runs-on: ubuntu-latest
     steps:
@@ -56,6 +68,18 @@ jobs:
         job_source: ${{ env.SOURCE_NAME_REPORT }}
         job_artifact_suffix: -xelatex
   
+  build-report-lualatex:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - uses: ./.github/actions/latexmk-and-output
+      with:
+        job_engine: pdflua
+        job_source: ${{ env.SOURCE_NAME_REPORT }}
+        job_artifact_suffix: -lualatex
+  
   build-seminar-pdflatex:
     runs-on: ubuntu-latest
     steps:
@@ -79,3 +103,16 @@ jobs:
         job_engine: pdfxe
         job_source: ${{ env.SOURCE_NAME_SEMINAR }}
         job_artifact_suffix: -xelatex
+  
+  build-seminar-lualatex:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - uses: ./.github/actions/latexmk-and-output
+      with:
+        job_engine: pdflua
+        job_source: ${{ env.SOURCE_NAME_SEMINAR }}
+        job_artifact_suffix: -lualatex
+
