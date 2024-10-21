@@ -16,7 +16,7 @@ You can request features and report bugs through the [issue tracker](https://git
 
 ## COPYRIGHT
 
-- Copyright (c) 2021-2023 Michael Roland <<michael.roland@ins.jku.at>>
+- Copyright (c) 2021-2024 Michael Roland <<michael.roland@ins.jku.at>>
 
 
 ## LICENSE
