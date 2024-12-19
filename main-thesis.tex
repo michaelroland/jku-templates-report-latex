@@ -84,7 +84,7 @@
 %% 
 %% Use the JKU LaTeX technical report template for this document.
 %% 
-\usepackage[mathesis,fancyfonts]{jkureport}
+\usepackage[phdthesis,fancyfonts]{jkureport}
 %% 
 %% The comma-separated list in square brackets are theme options. Useful options that you
 %% might want to use:
@@ -126,12 +126,19 @@
 %%                   when using XeTeX/LuaTeX) in math mode.
 %% 
 %% Advanced options:
-%%  * noautopdfinfo     ... Do not automatically try to add pdfinfo with hyperref from document
-%%                          metadata fields.
-%%  * logopath={<path>} ... Set the path where the theme can find its own logo resources. This
-%%                          should typically be a relative path and the default is `./logos'.
-%%  * fontpath={<path>} ... Set the path where the theme can find its own font resources. This
-%%                          should typically be a relative path and the default is `./fonts'.
+%%  * legacymode={<mode>} ... Activate a legacy mode to account for previous formal requirements,
+%%                            styles, and/or features. May be specified mutliple times to activate
+%%                            multiple legacy modes. The following <mode>s are supported:
+%%      - phd2021             ... Adapt cover sheet to formal requirements for unstructured
+%%                                doctoral programs before 2021W (also accounts for change from
+%%                                "Beurteiler*in" to "Betreuer*in" in 2024W versions of the German
+%%                                thesis cover sheets)
+%%  * noautopdfinfo       ... Do not automatically try to add pdfinfo with hyperref from document
+%%                            metadata fields.
+%%  * logopath={<path>}   ... Set the path where the theme can find its own logo resources. This
+%%                            should typically be a relative path and the default is `./logos'.
+%%  * fontpath={<path>}   ... Set the path where the theme can find its own font resources. This
+%%                            should typically be a relative path and the default is `./fonts'.
 %% 
 %% Hint: Boolean options can be used in the forms `option' or `option=true' the enable the
 %% option and `nooption' or `option=false' to disable the option.
@@ -191,8 +198,9 @@
 
 %% Command \supervisor[number,gender]{name}: sets the name of the supervisor (where number optionally
 %%   defines the rank of the supervisor (1-3) and gender specifies if the supervisor is male or female
-%%   to adapt gener-specific terms in German)
+%%   to adapt gender-specific terms in German)
 \supervisor{\prefix{Prof. Dr.} Firstname~Lastname}
+\supervisor[2]{\prefix{Prof. Dr.} Firstname~Lastname}
 
 % Command \assistantsupervisor{name}: sets the name of the assistant supervisor(s)
 \assistantsupervisor{\prefix{Dr.} Firstname~Lastname \suffix{MSc}}

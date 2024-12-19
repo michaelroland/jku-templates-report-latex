@@ -393,6 +393,35 @@
     tnf/.code={\renewcommand{\jkureport@faculty}{tnf}},
 }
 
+% Option legacymode: activate a legacy mode to account for previous formal requirements, styles, and/or features
+%    Supported legacy modes:
+%      - phd2021  Adapt cover sheet to formal requirements for unstructured doctoral programs before 2021W
+%                 (also accounts for change from "Beurteiler*in" to "Betreuer*in" in 2024W versions of the German thesis cover sheets)
+\newcommand{\jkureport@legacymodes}{}
+\newbool{jkureport@legacyMMXXIV@evaluator}
+\pgfkeys{%
+    /jkureport/pkg/.cd,
+    legacymode/.value required,
+    legacymode/.code={%
+        \notblank{#1}{%
+            \xdef\jkureport@legacymodes{\jkureport@legacymodes,#1}
+            \ifstrequal{#1}{phd2021}{%
+                \PackageWarning{jkureport}{Activating legacy mode `#1': Cover sheet for unstructured doctoral programs before 2021W.}%
+                \booltrue{jkureport@legacyMMXXIV@evaluator}%
+            }{%
+                \PackageError{jkureport}{Legacy mode `#1' not supported!}{}%
+            }%
+        }{%
+            \ifdefempty{\jkureport@legacymodes}{}{%
+                \PackageWarning{jkureport}{Disabling all legacy modes.}%
+            }%
+            \renewcommand{\jkureport@legacymodes}{}%
+            \boolfalse{jkureport@legacyMMXXIV@evaluator}%
+        }%
+    },
+    legacymode=,
+}
+
 
 \DeclareOption*{}
 \ProcessPgfOptions{/jkureport/pkg}
@@ -1390,16 +1419,48 @@
 \defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@submissiondepartmentname}{Angefertigt am}
 
 \defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@supervisorname}{Thesis Supervisor}
-\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@supervisorname}{Beurteiler\ifbool{jkureport@gender@f}{in}{}}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@supervisorname}{%
+    \ifbool{jkureport@legacyMMXXIV@evaluator}%
+        {Beurteiler}% was used before 2024W
+        {Betreuer}% used since 2024W
+    \ifbool{jkureport@gender@f}{in}{}%
+}
 
-\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@firstsupervisorname}{First Supervisor}
-\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@firstsupervisorname}{Erstbeurteiler\ifbool{jkureport@gender@f}{in}{}}
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@firstsupervisorname}{%
+    \ifbool{jkureport@legacyMMXXIV@evaluator}%
+        {Supervisor and First Evaluator}% used since 2024W for pre-2021W unstructured doctoral programs
+        {First Supervisor}%
+}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@firstsupervisorname}{%
+    \ifbool{jkureport@legacyMMXXIV@evaluator}%
+        {Erstbeurteiler}% was used before 2024W and used since 2024W for pre-2021W unstructured doctoral programs
+        {Erstbetreuer}% used since 2024W
+    \ifbool{jkureport@gender@f}{in}{}%
+}
 
-\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@secondsupervisorname}{Second Supervisor}
-\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@secondsupervisorname}{Zweitbeurteiler\ifbool{jkureport@gender@f}{in}{}}
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@secondsupervisorname}{%
+    \ifbool{jkureport@legacyMMXXIV@evaluator}%
+        {Second Evaluator}% used since 2024W for pre-2021W unstructured doctoral programs
+        {Second Supervisor}%
+}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@secondsupervisorname}{%
+    \ifbool{jkureport@legacyMMXXIV@evaluator}%
+        {Zweitbeurteiler}% was used before 2024W and used since 2024W for pre-2021W unstructured doctoral programs
+        {Zweitbetreuer}% used since 2024W
+    \ifbool{jkureport@gender@f}{in}{}%
+}
 
-\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@thirdsupervisorname}{Third Supervisor}
-\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@thirdsupervisorname}{Drittbeurteiler\ifbool{jkureport@gender@f}{in}{}}
+\defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@thirdsupervisorname}{%
+    \ifbool{jkureport@legacyMMXXIV@evaluator}%
+        {Third Evaluator}% used since 2024W for pre-2021W unstructured doctoral programs
+        {Third Supervisor}%
+}
+\defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@thirdsupervisorname}{%
+    \ifbool{jkureport@legacyMMXXIV@evaluator}%
+        {Drittbeurteiler}% was used before 2024W and used since 2024W for pre-2021W unstructured doctoral programs
+        {Drittbetreuer}% used since 2024W
+    \ifbool{jkureport@gender@f}{in}{}%
+}
 
 \defcaptionname{english,USenglish,american,UKenglish,british,canadian,australian,newzealand}{\jkureport@assistantsupervisorname}{Assistant Thesis Supervisor}
 \defcaptionname{german,germanb,ngerman,ngermanb,austrian,naustrian,swissgerman,nswissgerman}{\jkureport@assistantsupervisorname}{Mitbetreuung}
@@ -2448,15 +2509,15 @@
 % Environment alertblock: add a boxed warning message block with an optional title
 \newenvironment{alertblock}[1][]{%
     \setlength{\jkureport@outerparskip}{\parskip}
-	\begin{tcolorbox}[colback=jkuRed!20,opacityback=1.0,colframe=jkuRed,colbacktitle=jkuRed,title={#1}]%
+    \begin{tcolorbox}[colback=jkuRed!20,opacityback=1.0,colframe=jkuRed,colbacktitle=jkuRed,title={#1}]%
         \setlength{\parskip}{\jkureport@outerparskip}%
 }{%
-	\end{tcolorbox}%
+    \end{tcolorbox}%
 }
 
 \newenvironment{alertblock*}[1][]{%
     \setlength{\jkureport@outerparskip}{\parskip}
-	\begin{tcolorbox}[colback=jkuRed!20,opacityback=1.0,colframe=jkuRed,colbacktitle=jkuRed,title={#1},
+    \begin{tcolorbox}[colback=jkuRed!20,opacityback=1.0,colframe=jkuRed,colbacktitle=jkuRed,title={#1},
         detach title,
         if odd page or oneside={%
             sharp corners=northeast,
@@ -2482,21 +2543,21 @@
     ]%
         \setlength{\parskip}{\jkureport@outerparskip}%
 }{%
-	\end{tcolorbox}%
+    \end{tcolorbox}%
 }
 
 % Environment block: add a boxed message block with an optional title
 \newenvironment{block}[1][]{%
     \setlength{\jkureport@outerparskip}{\parskip}
-	\begin{tcolorbox}[colback=jkuDarkGray!20,opacityback=1.0,title={#1}]%
+    \begin{tcolorbox}[colback=jkuDarkGray!20,opacityback=1.0,title={#1}]%
         \setlength{\parskip}{\jkureport@outerparskip}%
 }{%
-	\end{tcolorbox}%
+    \end{tcolorbox}%
 }
 
 \newenvironment{block*}[1][]{%
     \setlength{\jkureport@outerparskip}{\parskip}
-	\begin{tcolorbox}[colback=jkuDarkGray!20,opacityback=1.0,title={#1},
+    \begin{tcolorbox}[colback=jkuDarkGray!20,opacityback=1.0,title={#1},
         detach title,
         if odd page or oneside={%
             sharp corners=northeast,
@@ -2522,21 +2583,21 @@
     ]%
         \setlength{\parskip}{\jkureport@outerparskip}%
 }{%
-	\end{tcolorbox}%
+    \end{tcolorbox}%
 }
 
 % Environment highlightblock: add a highlighted boxed message block with an optional title
 \newenvironment{highlightblock}[1][]{%
     \setlength{\jkureport@outerparskip}{\parskip}
-	\begin{tcolorbox}[colback=palette faculty highlight!20,opacityback=1.0,colframe=palette faculty highlight,colbacktitle=palette faculty highlight,title={#1}]%
+    \begin{tcolorbox}[colback=palette faculty highlight!20,opacityback=1.0,colframe=palette faculty highlight,colbacktitle=palette faculty highlight,title={#1}]%
         \setlength{\parskip}{\jkureport@outerparskip}%
 }{%
-	\end{tcolorbox}%
+    \end{tcolorbox}%
 }
 
 \newenvironment{highlightblock*}[1][]{%
     \setlength{\jkureport@outerparskip}{\parskip}
-	\begin{tcolorbox}[colback=palette faculty highlight!20,opacityback=1.0,colframe=palette faculty highlight,colbacktitle=palette faculty highlight,title={#1},
+    \begin{tcolorbox}[colback=palette faculty highlight!20,opacityback=1.0,colframe=palette faculty highlight,colbacktitle=palette faculty highlight,title={#1},
         detach title,
         if odd page or oneside={%
             sharp corners=northeast,
@@ -2562,7 +2623,7 @@
     ]%
         \setlength{\parskip}{\jkureport@outerparskip}%
 }{%
-	\end{tcolorbox}%
+    \end{tcolorbox}%
 }
 
 %% 
