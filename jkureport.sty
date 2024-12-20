@@ -1965,10 +1965,15 @@
 \newcommand{\jkureport@insertsubmissiondate}{%
     \begingroup%
     \DTMsetstyle{iso}%
-    \edef\@tmp{\noexpand\DTMsavedate{submissiondate}{\@date}}\@tmp%
-    \DTMmonthname{\DTMfetchmonth{submissiondate}}~\DTMfetchyear{submissiondate}%
+    \edef\@tmp{\noexpand\DTMsavedate{jkureport@docdate}{\@date}}\@tmp%
+    \DTMmonthname{\DTMfetchmonth{jkureport@docdate}}~\DTMfetchyear{jkureport@docdate}%
     \endgroup%
 }
+\ExplSyntaxOn
+\NewDocumentCommand{\jkureport@ifisodate}{mmm}{
+	\regex_match:nnTF {\A\d{4}-?\d{2}-?\d{2}\Z} {#1} {#2} {#3}
+}
+\ExplSyntaxOff
 \newcommand{\jkureport@insertdate}{%
     \ifdefstring{\jkureport@doctype}{thesis}{%
         \ifdefstring{\jkureport@docsubtype}{seminar}{%
@@ -1977,7 +1982,14 @@
             \jkureport@insertsubmissiondate%
         }%
     }{%
-        \protect\@date%
+		\expandafter\jkureport@ifisodate\expandafter{\@date}{%
+			\begingroup%
+			\edef\@tmp{\noexpand\DTMsavedate{jkureport@docdate}{\@date}}\@tmp%
+			\DTMusedate{jkureport@docdate}%
+			\endgroup%
+		}{%
+			\protect\@date%
+		}%
     }%
 }
 \newcommand{\jkureport@insertplace}{Linz}%
