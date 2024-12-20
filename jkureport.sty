@@ -1971,7 +1971,7 @@
 }
 \ExplSyntaxOn
 \NewDocumentCommand{\jkureport@ifisodate}{mmm}{
-	\regex_match:nnTF {\A\d{4}-?\d{2}-?\d{2}\Z} {#1} {#2} {#3}
+    \regex_match:nnTF {\A\d{4}-?\d{2}-?\d{2}\Z} {#1} {#2} {#3}
 }
 \ExplSyntaxOff
 \newcommand{\jkureport@insertdate}{%
@@ -1982,14 +1982,14 @@
             \jkureport@insertsubmissiondate%
         }%
     }{%
-		\expandafter\jkureport@ifisodate\expandafter{\@date}{%
-			\begingroup%
-			\edef\@tmp{\noexpand\DTMsavedate{jkureport@docdate}{\@date}}\@tmp%
-			\DTMusedate{jkureport@docdate}%
-			\endgroup%
-		}{%
-			\protect\@date%
-		}%
+        \expandafter\jkureport@ifisodate\expandafter{\@date}{%
+            \begingroup%
+            \edef\@tmp{\noexpand\DTMsavedate{jkureport@docdate}{\@date}}\@tmp%
+            \DTMusedate{jkureport@docdate}%
+            \endgroup%
+        }{%
+            \protect\@date%
+        }%
     }%
 }
 \newcommand{\jkureport@insertplace}{Linz}%
