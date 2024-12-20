@@ -126,12 +126,19 @@
 %%                   when using XeTeX/LuaTeX) in math mode.
 %% 
 %% Advanced options:
-%%  * noautopdfinfo     ... Do not automatically try to add pdfinfo with hyperref from document
-%%                          metadata fields.
-%%  * logopath={<path>} ... Set the path where the theme can find its own logo resources. This
-%%                          should typically be a relative path and the default is `./logos'.
-%%  * fontpath={<path>} ... Set the path where the theme can find its own font resources. This
-%%                          should typically be a relative path and the default is `./fonts'.
+%%  * legacymode={<mode>} ... Activate a legacy mode to account for previous formal requirements,
+%%                            styles, and/or features. May be specified mutliple times to activate
+%%                            multiple legacy modes. The following <mode>s are supported:
+%%      - phd2021             ... Adapt cover sheet to formal requirements for unstructured
+%%                                doctoral programs before 2021W (also accounts for change from
+%%                                "Beurteiler*in" to "Betreuer*in" in 2024W versions of the German
+%%                                thesis cover sheets)
+%%  * noautopdfinfo       ... Do not automatically try to add pdfinfo with hyperref from document
+%%                            metadata fields.
+%%  * logopath={<path>}   ... Set the path where the theme can find its own logo resources. This
+%%                            should typically be a relative path and the default is `./logos'.
+%%  * fontpath={<path>}   ... Set the path where the theme can find its own font resources. This
+%%                            should typically be a relative path and the default is `./fonts'.
 %% 
 %% Hint: Boolean options can be used in the forms `option' or `option=true' the enable the
 %% option and `nooption' or `option=false' to disable the option.
@@ -186,30 +193,46 @@
 %% Command \subtitle{subtitle}: sets the subtitle for seminar/technical reports (not used for theses)
 %\subtitle{Seminar Report}
 
-%% Command \author{name}: sets the author's name; use \prefix{} and \suffix{} to add academic titles and suffixes, use \matno{} to add the immatriculation number
+%% Command \author{name}: sets the author's name; use \prefix{} and \suffix{} to add academic titles
+%%   and suffixes, use \matno{} to add the immatriculation number
 \author{\prefix{DI} Firstname~Lastname \suffix{BSc}\matno{12345678}}
 
 %% Command \supervisor[number,gender]{name}: sets the name of the supervisor (where number optionally
-%%   defines the rank of the supervisor (1-3) and gender specifies if the supervisor is male or female
-%%   to adapt gener-specific terms in German)
+%%   defines the rank of the supervisor (1-3) and gender specifies if the supervisor is male (m) or
+%%   female (f/w) to adapt gender-specific terms in German)
 \supervisor{\prefix{Prof. Dr.} Firstname~Lastname}
 
-% Command \assistantsupervisor{name}: sets the name of the assistant supervisor(s)
+%% Command \assistantsupervisor{name}: sets the name of the assistant supervisor(s)
 \assistantsupervisor{\prefix{Dr.} Firstname~Lastname \suffix{MSc}}
 
-% Command \degree{degree}{degree program}: sets the degree and degree program name
+%% Command \degree{degree}{degree program}: sets the degree and degree program name
 \degree{Master of Science}{Computer Science}
+%% Please make sure to insert the _correct_ degree and degree program names for your studies before
+%% submission. Examples for degrees at JKU:
+%%  * Diplom-Ingenieurin / Diplom-Ingenieur
+%%  * Doctor medicinae universae
+%%  * Master of Arts
+%%  * Master of Laws
+%%  * Master of legal and business aspects in technics
+%%  * Master of Science
+%%  * Master of Science in Digital Business Management
+%%  * Master of Science Global Business
+%%  * Master of Social Sciences
+%%  * Doktorin / Doktor der Geistes- und Kulturwissenschaften
+%%  * Doktorin / Doktor der Medizinischen Wissenschaften
+%%  * Doktorin / Doktor der Naturwissenschaften
+%%  * Doktorin / Doktor der Rechtswissenschaften
+%%  * Doktorin / Doktor der Sozial- und Wirtschaftswissenschaften
+%%  * Doktorin / Doktor der technischen Wissenschaften
+%%  * Doctor of Philosophy
 
-% Command \submissiondepartment{institute or department}: set the department that the thesis is submitted at
+%% Command \submissiondepartment{institute or department}: set the department that the thesis is submitted at
 \submissiondepartment{Institute of Networks~and~Security}
 
-% Command \submissionplace{place}: set the place of submission (typically `Linz', which is also the default)
-%\submissionplace{Linz}
-
-% Command \date{YYYY-MM-DD}: set the day of submission (defaults to today)
+%% Command \date{YYYY-MM-DD}: set the day of submission (defaults to today)
 %\date{2020-04-09}
 
-% Command \keywords{text}: set the document keywords
+%% Command \keywords{text}: set the document keywords
 %\keywords{Space for your comma-separated keywords}
 
 
