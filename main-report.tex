@@ -189,7 +189,11 @@
     \hfill\\%
 }
 
-%% Command \author{name}: sets the author's name; use \prefix{} and \suffix{} to add academic titles and suffixes, use \matno{} to add the immatriculation number
+%% Command \author{name}: sets the author name(s); separate multiple authors with \and; use \prefix{}
+%%   and \suffix{} to add academic titles and suffixes (if needed); use \affiliation{} to add an
+%%   affiliation, use \authornewline to add line breaks (e.g. to separate authors from contact
+%%   information), use \authormail{}, \authorweb{}, \authorphone{} and \authorfax{} to add contact
+%%   information)
 \author{%
     Firstname1 Lastname1 \and Firstname2 Lastname2 \and Firstname3 Lastname3
     \affiliation{Institute of Networks~and~Security}
@@ -200,25 +204,25 @@
     \authornewline
 }
 
-% Command \date{YYYY-MM-DD}: set the day of publication (defaults to today)
+%% Command \date{YYYY-MM-DD}: set the day of publication (defaults to today)
 %\date{2020-04-09}
 
-% Command \partnerlogo{filename}: use filename as partnerlogo, filename may be blank to disable the logo
+%% Command \partnerlogo{filename}: use filename as partnerlogo, filename may be blank to disable the logo
 %\partnerlogo{logos/ins}
 
-% Command \revisionblock{text}: set the document revision block on the title page
+%% Command \revisionblock{text}: set the document revision block on the title page
 \revisionblock{Space for your revision block, acknowledgements, etc.}
 
-% Command \reportnumber{number}: set the report number
+%% Command \reportnumber{number}: set the report number
 %\reportnumber{Space for your report number}
 
-% Command \setbottommark{text}: set the bottom mark (in document footer)
+%% Command \setbottommark{text}: set the bottom mark (in document footer)
 %\setbottommark{Space for your bottom mark}
 
-% Command \abstract{text}: set the document abstract on the title page
+%% Command \abstract{text}: set the document abstract on the title page
 \abstract{Space for your (short) abstract.}
 
-% Command \keywords{text}: set the document keywords
+%% Command \keywords{text}: set the document keywords
 %\keywords{Space for your comma-separated keywords}
 
 
